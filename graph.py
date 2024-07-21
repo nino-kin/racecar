@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
@@ -53,4 +56,3 @@ plt.show()
 png =  csv_path.replace('.csv', '.png')
 print("\nSaving this plot >>>", png)
 plt.savefig(csv_path.replace('.csv', '.png'))
-

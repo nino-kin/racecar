@@ -1,10 +1,12 @@
-# coding:utf-8
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+
 import numpy as np
 import config
 import time
-if config.HAVE_NN: 
+if config.HAVE_NN:
     import torch.tensor
-    from train_pytorch import denormalize_motor, normalize_ultrasonics 
+    from train_pytorch import denormalize_motor, normalize_ultrasonics
 
 class Planner:
     def __init__(self, name):
@@ -44,14 +46,14 @@ class Planner:
             self.flag_back = True
             print("後退")
         elif max(ultrasonic_Fr.records[:times]) > self.DETECTION_DISTANCE_BACK:
-            self.flag_back = False  
+            self.flag_back = False
 
     # 前側１センサーを用いた停止
     def Stop(self, ultrasonic_Fr):
         ## 目前に前壁をtimes回検知
         times = 3
         if max(ultrasonic_Fr.records[0:times-1]) < self.DETECTION_DISTANCE_STOP:
-                self.flag_stop = True                
+                self.flag_stop = True
                 print("停止")
 
     # 前側３センサーを用いた右左走行
@@ -68,9 +70,9 @@ class Planner:
             else:
                 self.steer_pwm_duty =config.LEFT
                 self.throttle_pwm_duty = config.FORWARD_C
-                self.message = "左旋回"            
+                self.message = "左旋回"
         ## 前壁を検知なし
-        else: 
+        else:
             self.steer_pwm_duty =config.NUTRAL
             self.throttle_pwm_duty = config.FORWARD_S
             self.message = "直進中"
@@ -107,9 +109,9 @@ class Planner:
         elif dis_FrRH < self.DETECTION_DISTANCE_TARGET - self.DETECTION_DISTANCE_RANGE or dis_RrRH < self.DETECTION_DISTANCE_TARGET - self.DETECTION_DISTANCE_RANGE:
             self.steer_pwm_duty =config.LEFT
             self.throttle_pwm_duty = config.FORWARD_C
-            self.message = "左旋回"            
+            self.message = "左旋回"
         ## ちょうどよい
-        else: 
+        else:
             self.steer_pwm_duty =config.NUTRAL
             self.throttle_pwm_duty = config.FORWARD_S
             self.message = "直進中"
@@ -131,9 +133,9 @@ class Planner:
         elif dis_FrLH < self.DETECTION_DISTANCE_TARGET - self.DETECTION_DISTANCE_RANGE or dis_RrLH < self.DETECTION_DISTANCE_TARGET - self.DETECTION_DISTANCE_RANGE:
             self.steer_pwm_duty =config.RIGHT
             self.throttle_pwm_duty = config.FORWARD_C
-            self.message = "右旋回"            
+            self.message = "右旋回"
         ## ちょうどよい
-        else: 
+        else:
             self.steer_pwm_duty =config.NUTRAL
             self.throttle_pwm_duty = config.FORWARD_S
             self.message = "直進中"
@@ -161,7 +163,7 @@ class Planner:
          #速度更新
         v = (min_dis - min_dis_before)/delta_t
         # PID制御でステア値更新
-        steer_pwm_duty_pid = self.K_P*delta_dis - self.K_D*v + self.K_I*integral_delta_dis 
+        steer_pwm_duty_pid = self.K_P*delta_dis - self.K_D*v + self.K_I*integral_delta_dis
         ### -100~100に収めて正の割合化
         steer_pwm_duty_pid = abs(max(-100,min(100,steer_pwm_duty_pid))/100)
 
@@ -189,7 +191,7 @@ class Planner:
          #速度更新
         v = (min_dis - min_dis_before)/delta_t
         # PID制御でステア値更新
-        steer_pwm_duty_pid = self.K_P*delta_dis - self.K_D*v + self.K_I*integral_delta_dis 
+        steer_pwm_duty_pid = self.K_P*delta_dis - self.K_D*v + self.K_I*integral_delta_dis
         ### -100~100に収めて正の割合化
         steer_pwm_duty_pid = abs(max(-100,min(100,steer_pwm_duty_pid))/100)
 

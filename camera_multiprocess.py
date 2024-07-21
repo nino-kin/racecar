@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+
 from __future__ import annotations
 
 import ctypes
@@ -115,16 +118,16 @@ class VideoCaptureWrapper:
     #def save(self, img, img_sh, ts, steer, throttle,  image_dir):
     def save(self, img,  ts, steer, throttle,  image_dir):
         try:
-            cv2.imwrite(image_dir +'/' + str(ts)[:13] +'_'+ str(steer) +'_'+ str(throttle) +'.jpg', img)            
+            cv2.imwrite(image_dir +'/' + str(ts)[:13] +'_'+ str(steer) +'_'+ str(throttle) +'.jpg', img)
             #img = cv2.resize(img, (160, 120))
             #img_sh[:] = img.flatten()
             return img
         except:
             print("Cannot save image!")
             pass
-        
+
 if __name__ == "__main__":
-    print(" 注意: もしカメラが既に起動中で赤色LEDがオン、resource busyになる場合は再起動！\n")
+    print(" 注意: もしカメラが既に起動中で赤色LEDがオン、resource busyになる場合は再起動!\n")
     # カメラを使ってVideoCaptureWrapperを作成
     video_capture = VideoCaptureWrapper(0)
     _, img = video_capture.read()

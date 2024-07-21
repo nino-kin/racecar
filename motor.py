@@ -1,4 +1,6 @@
-# coding:utf-8
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+
 import Adafruit_PCA9685
 import config
 import time
@@ -23,7 +25,7 @@ class Motor:
             throttle_pwm = int(self.THROTTLE_STOPPED_PWM + (self.THROTTLE_FORWARD_PWM - self.THROTTLE_STOPPED_PWM) * duty / 100)
         else:
             throttle_pwm = int(self.THROTTLE_STOPPED_PWM + (self.THROTTLE_REVERSE_PWM - self.THROTTLE_STOPPED_PWM) * abs(duty) / 100)
-        
+
         self.pwm.set_pwm(self.CHANNEL_THROTTLE, 0, throttle_pwm)
         #print(throttle_pwm)
 
@@ -37,7 +39,7 @@ class Motor:
         #else:
         self.pwm.set_pwm(self.CHANNEL_STEERING, 0, steer_pwm)
         #print(steer_pwm)
-        
+
     def limit_steer_PWM(self,steer_pwm):
         if steer_pwm > config.STEERING_RIGHT_PWM_LIMIT:
             print ("\n!!!警告!!! 壊さないように最大値:{}で設定ください!\n".format(config.STEERING_RIGHT_PWM_LIMIT))
@@ -47,7 +49,7 @@ class Motor:
             return config.STEERING_LEFT_PWM_LIMIT
         else:
             return steer_pwm
-        
+
 
     def adjust_steering(self):
         print('========================================')

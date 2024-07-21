@@ -1,24 +1,26 @@
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+
 from train_pytorch import load_data, CustomDataset, NeuralNetwork,  test_model
 import os
 import sys
 import time
 
 import config
- 
 
 def main():
     # データのロード
     x_tensor, y_tensor, csv_file = load_data()
-    
+
     # データセットとデータローダーの作成
     dataset = CustomDataset(x_tensor, y_tensor)
     #dataloader = DataLoader(dataset, batch_size=config.batch_size, shuffle=True)
-    
+
     # モデルの作成
     input_dim = x_tensor.shape[1]
     output_dim = y_tensor.shape[1]
     model = NeuralNetwork(input_dim, output_dim, config.hidden_dim, config.num_hidden_layers)
-            
+
     # モデルのテスト
     print("モデルのテストを開始します...")
     print("モデルのパス: ", config.model_path)
@@ -43,6 +45,6 @@ def main():
     else:
         pass
     test_model(model, config.model_path,dataset,x_tensor.shape[0])
- 
+
 if __name__ == "__main__":
     main()

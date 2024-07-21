@@ -1,4 +1,6 @@
-# coding:utf-8
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+
 import time
 import RPi.GPIO as GPIO
 import config
@@ -24,12 +26,12 @@ class Ultrasonic:
         starttime=time.perf_counter()
         while(GPIO.input(self.echo)==GPIO.LOW):
             sigoff=time.perf_counter()
-            if sigoff - starttime > 0.02: 
+            if sigoff - starttime > 0.02:
             #     print("break1")
                 break
         while(GPIO.input(self.echo)==GPIO.HIGH):
             sigon=time.perf_counter()
-            if sigon - sigoff > 0.02: 
+            if sigon - sigoff > 0.02:
             #     print("break2")
                 break
         # time * sound speed / 2(round trip)
@@ -50,7 +52,6 @@ class Ultrasonic:
         self.records = np.delete(self.records,-1)
         return self.dis
 
-        
 if __name__ == "__main__":
     import config
     import RPi.GPIO as GPIO
@@ -61,8 +62,8 @@ if __name__ == "__main__":
     GPIO.setup(config.t_list,GPIO.OUT,initial=GPIO.LOW)
 
     # 超音波センサを設定、使う分だけリストにultrasonicインスタンスを入れる
-    #ultraconic = Ultraconic(config.t_list[0],config.e_list[0]) 
-    ultrasonics = [] 
+    #ultraconic = Ultraconic(config.t_list[0],config.e_list[0])
+    ultrasonics = []
     # 一つだけ使う場合、複数使う場合はコメントアウト外す
     #config.ultrasonics_list = ["Fr"]
     config.ultrasonics_list = ["RrLH", "FrLH", "Fr", "FrRH","RrRH"]
@@ -98,7 +99,7 @@ if __name__ == "__main__":
     print('{}回、計測開始します!'.format(sampling_times))
     # 入力はintに戻しておく
     sampling_times = int(sampling_times)
-    
+
     try:
         for i in range(sampling_times):
             message = ""

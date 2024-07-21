@@ -1,4 +1,6 @@
-# coding:utf-8
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+
 import config
 import pygame
 import os
@@ -35,8 +37,8 @@ class Joystick(object):
         except pygame.error:
             self.HAVE_CONTROLLER = False
             print('ジョイスティックが接続されていません。ジョイスティックをOFFにします。')
-            
-    
+
+
     #def poll(self,steer,accel,accel1,accel2,breaking):
     def poll(self):
         # イベントがある場合は更新
@@ -63,4 +65,3 @@ if __name__ == "__main__":
         #print("Str:",steer,"Acc1:",accel1,"Acc2:",accel2)
         for e in pygame.event.get():
             print(e)
-
