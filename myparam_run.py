@@ -1,4 +1,6 @@
-# coding:utf-8
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+
 if not __name__ == "__main__":
     import config
     # ~~~出前授業用に一部のバラメータを変更
@@ -7,12 +9,12 @@ if not __name__ == "__main__":
     # スロットル用
     config.FORWARD_S = 80 #50 #ストレートでの値, joy_accel1
     config.FORWARD_C = 50 #40 #カーブでのの値, joy_accel2
-    config.REVERSE = -40 
+    config.REVERSE = -40
     # ステアリング用
     config.LEFT = 100 #<=100
     config.RIGHT = -100 #<=100
 
-    # 超音波センサの検知パラメータ 
+    # 超音波センサの検知パラメータ
     ## 距離関連、単位はmm
     ### 前壁の停止/検知距離
     config.DETECTION_DISTANCE_STOP = 150
@@ -51,8 +53,8 @@ if not __name__ == "__main__":
         config.e_list=[26,24,37,31,38]
         ### Triger -- Fr:15, FrLH:13, RrLH:35, FrRH:32, RrRH:36
         config.t_list=[15,13,35,32,36]
-        config.ultrasonics_dict_trig = {"Fr":config.t_list[0], "FrLH":config.t_list[1], "RrLH":config.t_list[2], "FrRH":config.t_list[3], "RrRH":config.t_list[4]} 
-        config.ultrasonics_dict_echo = {"Fr":config.e_list[0], "FrLH":config.e_list[1], "RrLH":config.e_list[2], "FrRH":config.e_list[3], "RrRH":config.e_list[4]} 
+        config.ultrasonics_dict_trig = {"Fr":config.t_list[0], "FrLH":config.t_list[1], "RrLH":config.t_list[2], "FrRH":config.t_list[3], "RrRH":config.t_list[4]}
+        config.ultrasonics_dict_echo = {"Fr":config.e_list[0], "FrLH":config.e_list[1], "RrLH":config.e_list[2], "FrRH":config.e_list[3], "RrRH":config.e_list[4]}
         config.CHANNEL_STEERING = 14
         config.CHANNEL_THROTTLE = 13
 
@@ -73,7 +75,7 @@ if not __name__ == "__main__":
     config.STEERING_WIDTH_PWM = 80
     config.STEERING_RIGHT_PWM = config.STEERING_CENTER_PWM + config.STEERING_WIDTH_PWM
     config.STEERING_LEFT_PWM = config.STEERING_CENTER_PWM - config.STEERING_WIDTH_PWM
-    ### !!!ステアリングを壊さないための上限下限の値設定  
+    ### !!!ステアリングを壊さないための上限下限の値設定
     config.STEERING_RIGHT_PWM_LIMIT = 550
     config.STEERING_LEFT_PWM_LIMIT = 250
 
