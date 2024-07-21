@@ -9,7 +9,6 @@ import multiprocessing.sharedctypes
 import multiprocessing.synchronize
 import signal
 from time import perf_counter, time
-
 from typing import cast
 
 import cv2
@@ -17,90 +16,123 @@ import numpy as np
 
 import config
 
-# ビデオのキャプチャとバッファの更新を担当する関数
 def _update(args: tuple, buffer: ctypes.Array[ctypes.c_uint8], ready: multiprocessing.synchronize.Event, cancel: multiprocessing.synchronize.Event):
+    """
+    Function responsible for video capture and buffer updating.
 
-    # キャプチャ中にCtrl+Cが押された場合のシグナルハンドラの設定
+    Args:
+        args (tuple): Arguments for video capture
+        buffer (ctypes.Array[ctypes.c_uint8]): Shared memory buffer
+        ready (multiprocessing.synchronize.Event): Event indicating readiness
+        cancel (multiprocessing.synchronize.Event): Event indicating cancellation
+
+    Raises:
+        IOError: If opening the capture device fails
+    """
+    # Set up signal handler for Ctrl+C during capture
     signal.signal(signal.SIGINT, signal.SIG_IGN)
 
-    # キャプチャデバイスをオープン
+    # Open capture device
     video_capture = cv2.VideoCapture(*args)
     if not video_capture.isOpened():
         raise IOError()
 
     try:
-        # キャプチャループ
+        # Capture loop
         while not cancel.is_set():
-            # フレームの取得
+            # Get frame
             ret, img = cast("tuple[bool, cv2.Mat]", video_capture.read())
             if not ret:
                 continue
 
-            # バッファ更新の準備
+            # Prepare for buffer update
             ready.clear()
             memoryview(buffer).cast('B')[:] = memoryview(img).cast('B')[:]
             ready.set()
 
     finally:
-        # キャプチャデバイスの解放
+        # Release capture device
         video_capture.release()
 
 
-# ビデオの情報取得を担当する関数
 def _get_information(args: tuple):
+    """
+    Function responsible for getting video information.
 
-    # キャプチャデバイスをオープン
+    Args:
+        args (tuple): Arguments for video capture
+
+    Returns:
+        tuple: Frame shape (height, width, channels)
+
+    Raises:
+        IOError: If opening the capture device fails
+    """
+    # Open capture device
     video_capture = cv2.VideoCapture(*args)
     if not video_capture.isOpened():
         raise IOError()
 
     try:
-        # 最初のフレームの取得
+        # Get the first frame
         ret, img = cast("tuple[bool, cv2.Mat]", video_capture.read())
         if not ret:
             raise IOError()
 
-        # フレームの形状を返す
+        # Return frame shape
         return img.shape
 
     finally:
-        # キャプチャデバイスの解放
+        # Release capture device
         video_capture.release()
 
 
-# ビデオキャプチャをラップするクラス
 class VideoCaptureWrapper:
+    """
+    A wrapper class for video capture.
+    """
 
     def __init__(self, *args) -> None:
+        """
+        Initialize VideoCaptureWrapper.
+
+        Args:
+            *args: Arguments for video capture
+        """
         self.currentframe = None
 
-        # キャプチャデバイスの情報取得
+        # Get capture device information
         self.__shape = _get_information(args)
         height, width, channels = self.__shape
 
-        # 共有バッファの作成
+        # Create shared buffer
         self.__buffer = multiprocessing.sharedctypes.RawArray(
             ctypes.c_uint8, height * width * channels)
 
-        # 同期用イベントの作成
+        # Create synchronization events
         self.__ready = multiprocessing.Event()
         self.__cancel = multiprocessing.Event()
 
-        # キャプチャプロセスの開始
+        # Start capture process
         self.__enqueue = multiprocessing.Process(target=_update, args=(
             args, self.__buffer, self.__ready, self.__cancel), daemon=True)
         self.__enqueue.start()
 
         self.__released = cast(bool, False)
 
-    # フレームの取得
     def read(self):
+        """
+        Get a frame.
+
+        Returns:
+            tuple: (bool, np.ndarray) Success flag and frame image
+        """
         self.__ready.wait()
         self.currentframe = np.reshape(self.__buffer, self.__shape).copy()
         return cast(bool, True), self.currentframe
 
-    # キャプチャの解放
     def release(self):
+        """Release the capture."""
         if self.__released:
             return
 
@@ -108,55 +140,56 @@ class VideoCaptureWrapper:
         self.__enqueue.join()
         self.__released = True
 
-    # デストラクタ
     def __del__(self):
+        """Destructor."""
         try:
             self.release()
         except:
             pass
 
-    #def save(self, img, img_sh, ts, steer, throttle,  image_dir):
-    def save(self, img,  ts, steer, throttle,  image_dir):
+    def save(self, img, ts, steer, throttle, image_dir):
+        """
+        Save an image.
+
+        Args:
+            img (np.ndarray): Image to save
+            ts (float): Timestamp
+            steer (float): Steering value
+            throttle (float): Throttle value
+            image_dir (str): Directory to save the image
+
+        Returns:
+            np.ndarray: Saved image
+        """
         try:
             cv2.imwrite(image_dir +'/' + str(ts)[:13] +'_'+ str(steer) +'_'+ str(throttle) +'.jpg', img)
-            #img = cv2.resize(img, (160, 120))
-            #img_sh[:] = img.flatten()
             return img
         except:
             print("Cannot save image!")
             pass
 
 if __name__ == "__main__":
-    print(" 注意: もしカメラが既に起動中で赤色LEDがオン、resource busyになる場合は再起動!\n")
-    # カメラを使ってVideoCaptureWrapperを作成
+    print(" Note: If the camera is already running with red LED on, resource busy, please restart!\n")
+    # Create VideoCaptureWrapper using camera
     video_capture = VideoCaptureWrapper(0)
     _, img = video_capture.read()
     img = cv2.resize(img, (160, 120))
-    # 一枚だけ保存
-    #video_capture.save(img, time(), "steerpwm", "throttlepwm", ".")
 
     try:
-        # チェック用
-        #while True:
-        #    print(video_capture.currentframe)
-
-        # メインループ
+        # Main loop
         while True:
             start_time = perf_counter()
             _, img = video_capture.read()
-            #img = cv2.resize(img, (160, 120))
             print( "fps:" + str(round(1/(perf_counter() - start_time))))
             try:
-                #cv2.imshow("window", img)
-                #cv2.waitKey(1)
                 pass
-            # ローカル画面出力無しの場合
+            # In case of no local screen output
             except :
                 pass
 
     except KeyboardInterrupt:
-        print("\nKeyboardInterrupt, camera stopping")
+        print("\nKeyboardInterrupt, camera stopping.")
         pass
 
-    # キャプチャの解放
+    # Release capture
     video_capture.release()
