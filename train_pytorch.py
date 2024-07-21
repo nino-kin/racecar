@@ -99,14 +99,14 @@ def load_data():
         df['Str'] = pd.cut(df['Str'], bins=config.bins_Str, labels=False)
         y = df.iloc[:, 1:3]
         y_tensor = torch.tensor(y.values, dtype=torch.long)
-        print("\n学習データの確認:\n教師データ(ラベル：Str, Thr[学習なし]):", y_tensor[0, :], "\n入力データ(正規化センサ値)：", x_tensor[0, :])
+        print("\n学習データの確認:\n教師データ(ラベル:Str, Thr[学習なし]):", y_tensor[0, :], "\n入力データ(正規化センサ値):", x_tensor[0, :])
         print("学習データサイズ:", "y:", y_tensor.shape, "x:", x_tensor.shape, "\n")
     else:
         y = df.iloc[:, 1:3]
         y_tensor = torch.tensor(y.values, dtype=torch.float32)
         y_tensor = normalize_motor(y_tensor)
         y_tensor[:, 0] = steering_shifter_to_01(y_tensor[:, 0])
-        print("\n学習データの確認:\n教師データ(正規化操作値+0.5: Str, Thr):", y_tensor[0, :], "\n入力データ(正規化センサ値)：", x_tensor[0, :])
+        print("\n学習データの確認:\n教師データ(正規化操作値+0.5: Str, Thr):", y_tensor[0, :], "\n入力データ(正規化センサ値):", x_tensor[0, :])
         print("学習データサイズ:", "y:", y_tensor.shape, "x:", x_tensor.shape, "\n")
 
     return x_tensor, y_tensor, csv_file
@@ -378,7 +378,7 @@ def load_model(model, model_path=None, optimizer=None, folder='.'):
         if model_files:
             print("利用可能なモデル:")
             print(model_files)
-            model_name = input("読み込むモデル名を入力してください.\n！注意！過去にモデル構造を変更している場合は読み込めませんので、config.pyを編集してください。\n: ")
+            model_name = input("読み込むモデル名を入力してください.\n[WARN] 過去にモデル構造を変更している場合は読み込めませんので、config.pyを編集してください。\n: ")
             model_path = os.path.join(folder, model_name)
             checkpoint = torch.load(model_path)
             model.load_state_dict(checkpoint['model_state_dict'])
@@ -434,7 +434,7 @@ def test_model(model, model_path, dataset, sample_num=5):
         print("confusion matrix_Str:\n", pd.crosstab(y[:, 0], yh[:, 0], rownames=['True'], colnames=['Predicted'], margins=True))
         print("\n正解率_Thr: ", int(torch.sum(y[:, 1] == yh[:, 1]).item() / sample_num * 100), "%")
 
-    print("\n使用したモデル名：", os.path.split(model_path)[-1])
+    print("\n使用したモデル名:", os.path.split(model_path)[-1])
 
 def main():
     """
