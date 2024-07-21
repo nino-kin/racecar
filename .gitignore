@@ -1,3 +1,16 @@
+#---------------------------------------#
+# Project Ignores                       #
+#---------------------------------------#
+old/*
+records/*
+images/*
+models/*
+.DS_STORE
+test*
+
+#---------------------------------------#
+# Python Ignores                        #
+#---------------------------------------#
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
