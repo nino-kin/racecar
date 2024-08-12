@@ -53,4 +53,3 @@ plt.show()
 png =  csv_path.replace('.csv', '.png')
 print("\nSaving this plot >>>", png)
 plt.savefig(csv_path.replace('.csv', '.png'))
-

@@ -126,10 +126,10 @@ try:
 
         # 判断（プランニング）＃
         # 使う超音波センサをconfig.pyのultrasonics_listで設定必要
-        ## ただ真っすぐに走る 
+        ## ただ真っすぐに走る
         if config.mode_plan == "GoStraight":
             steer_pwm_duty,throttle_pwm_duty = 0, config.FORWARD_S
-        ## 右左空いているほうに走る 
+        ## 右左空いているほうに走る
         elif config.mode_plan == "Right_Left_3":
             steer_pwm_duty,throttle_pwm_duty = plan.Right_Left_3(ultrasonics["FrLH"].dis, ultrasonics["Fr"].dis, ultrasonics["FrRH"].dis)
         ## 過去の値を使ってスムーズに走る
@@ -154,7 +154,7 @@ try:
             args = [ultrasonics[key].dis for key in config.ultrasonics_list]
             steer_pwm_duty, throttle_pwm_duty = plan.NN(model, *args)
             #steer_pwm_duty, throttle_pwm_duty  = plan.NN(model, ultrasonics["FrLH"].dis, ultrasonics["Fr"].dis, ultrasonics["FrRH"].dis)
-        else: 
+        else:
             print("デフォルトの判断モードの選択ではありません, コードを書き換えてオリジナルのモードを実装しよう!")
             break
 
@@ -176,12 +176,12 @@ try:
                     throttle_pwm_duty  = int(config.FORWARD_S)
                 elif joystick.accel1:
                     throttle_pwm_duty  = int(config.FORWARD_C)
-            
-            if joystick.recording: 
+
+            if joystick.recording:
                 recording = True
-            else: 
+            else:
                 recording = False
-            
+
             ### コントローラでブレーキ
             if joystick.breaking:
                 motor.breaking()
@@ -189,18 +189,18 @@ try:
         ## モータードライバーに出力をセット
         ### 補正（動的制御）
         ### Gthr:スロットル（前後方向）のゲイン、Gstr:ステアリング（横方向）のゲイン
-        ### ヨー角の角速度でオーバーステア/スリップに対しカウンターステア 
+        ### ヨー角の角速度でオーバーステア/スリップに対しカウンターステア
         if config.mode_plan == "GCounter":
             imu.GCounter()
-            motor.set_steer_pwm_duty(steer_pwm_duty * (1 - 2 * imu.Gstr))        
+            motor.set_steer_pwm_duty(steer_pwm_duty * (1 - 2 * imu.Gstr))
             motor.set_throttle_pwm_duty(throttle_pwm_duty * (1 - 2 * imu.Gthr))
-        ## ヨー角の角速度でスロットル調整 
+        ## ヨー角の角速度でスロットル調整
         ## 未実装
         #elif config.mode_plan == "GVectoring":
         #    imu.GVectoring()
-        else: 
-            motor.set_steer_pwm_duty(steer_pwm_duty)        
-            motor.set_throttle_pwm_duty(throttle_pwm_duty)  
+        else:
+            motor.set_steer_pwm_duty(steer_pwm_duty)
+            motor.set_throttle_pwm_duty(throttle_pwm_duty)
 
         ## 記録（タイムスタンプと距離データを配列に記録）
         ts =  time.time()
@@ -212,18 +212,18 @@ try:
                 ret, img = cam.read()
                 cam.save(img, ts, steer_pwm_duty, throttle_pwm_duty, config.image_dir)
 
-        ## 全体の状態を出力      
+        ## 全体の状態を出力
         #print("Rec:"+recording, "Mode:",mode,"RunTime:",ts_run ,"Str:",steer_pwm_duty,"Thr:",throttle_pwm_duty,"Uls:", message) #,end=' , '
         if mode == 'auto' : mode = config.mode_plan
         if config.plotter:
               print(message)
         else: print("Rec:{0}, Mode:{1}, RunTime:{2:>5}, Str:{3:>4}, Thr:{4:>4}, Uls:[ {5}]".format(recording, mode, ts_run, steer_pwm_duty, throttle_pwm_duty, message)) #,end=' , '
 
-        ## 後退/停止操作（簡便のため、判断も同時に実施） 
+        ## 後退/停止操作（簡便のため、判断も同時に実施）
         if config.mode_recovery == "None":
             pass
 
-        elif config.mode_recovery == "Back" and mode != "user":  
+        elif config.mode_recovery == "Back" and mode != "user":
             ### 後退
             plan.Back(ultrasonics["Fr"],ultrasonics["FrRH"],ultrasonics["FrLH"])
             if plan.flag_back == True:
@@ -231,7 +231,7 @@ try:
                     motor.set_steer_pwm_duty(config.NUTRAL)
                     motor.set_throttle_pwm_duty(config.REVERSE)
                     time.sleep(config.recovery_time)
-            else: 
+            else:
                 pass
 
         elif config.mode_recovery == "Stop" and mode != "user":
@@ -260,7 +260,7 @@ finally:
     header ="Tstamp,Str,Thr,"
     for name in config.ultrasonics_list:
         header += name + ","
-    header = header[:-1]        
+    header = header[:-1]
     np.savetxt(config.record_filename, d_stack[1:], delimiter=',',  fmt='%10.2f', header=header, comments="")
     #np.savetxt(config.record_filename, d_stack[1:], fmt='4f',header=header, comments="")
     print('記録停止')
@@ -270,4 +270,4 @@ finally:
 header ="Tstamp, Str, Thr, "
 for name in config.ultrasonics_list:
     header += name + ", "
-header = header[:-1]        
+header = header[:-1]

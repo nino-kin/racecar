@@ -7,13 +7,13 @@ import os
 FORWARD_S = 40 #ストレートでの値, joy_accel1
 FORWARD_C = 30 #カーブでのの値, joy_accel2
 STOP = 0
-REVERSE = -100 
+REVERSE = -100
 # ステアリング用
 LEFT = 100 #<=100
-NUTRAL = 0 
+NUTRAL = 0
 RIGHT = -100 #<=100
 
-# 超音波センサの検知パラメータ 
+# 超音波センサの検知パラメータ
 ## 距離関連、単位はmm
 ### 前壁の停止/検知距離
 DETECTION_DISTANCE_STOP = 250
@@ -60,7 +60,7 @@ STEERING_CENTER_PWM = 410 #410:newcar, #340~360:oldcar
 STEERING_WIDTH_PWM = 100
 STEERING_RIGHT_PWM = STEERING_CENTER_PWM + STEERING_WIDTH_PWM
 STEERING_LEFT_PWM = STEERING_CENTER_PWM - STEERING_WIDTH_PWM
-### !!!ステアリングを壊さないための上限下限の値設定  
+### !!!ステアリングを壊さないための上限下限の値設定
 STEERING_RIGHT_PWM_LIMIT = 550
 STEERING_LEFT_PWM_LIMIT = 250
 
@@ -69,7 +69,7 @@ STEERING_LEFT_PWM_LIMIT = 250
 THROTTLE_STOPPED_PWM = 380 #めやす：390:newcar, #370~390:oldcar
 THROTTLE_FORWARD_PWM = 500
 THROTTLE_REVERSE_PWM = 250
-THROTTLE_WIDTH_PWM = 100 
+THROTTLE_WIDTH_PWM = 100
 
 # 超音波センサの設定
 ## 使う超音波センサ位置の指示、計測ループが遅い場合は数を減らす
@@ -99,8 +99,8 @@ if board == "old":
     e_list=[26,24,37,31,38]
     ### Triger -- Fr:15, FrLH:13, RrLH:35, FrRH:32, RrRH:36
     t_list=[15,13,35,32,36]
-    ultrasonics_dict_trig = {"Fr":t_list[0], "FrLH":t_list[1], "RrLH":t_list[2], "FrRH":t_list[3], "RrRH":t_list[4]} 
-    ultrasonics_dict_echo = {"Fr":e_list[0], "FrLH":e_list[1], "RrLH":e_list[2], "FrRH":e_list[3], "RrRH":e_list[4]} 
+    ultrasonics_dict_trig = {"Fr":t_list[0], "FrLH":t_list[1], "RrLH":t_list[2], "FrRH":t_list[3], "RrRH":t_list[4]}
+    ultrasonics_dict_echo = {"Fr":e_list[0], "FrLH":e_list[1], "RrLH":e_list[2], "FrRH":e_list[3], "RrRH":e_list[4]}
     CHANNEL_STEERING = 14 #old board
     CHANNEL_THROTTLE = 13 #old board
 
@@ -109,8 +109,8 @@ elif board == "new": #new board
     e_list=[11,13,15,29,31,33,35,37]
     ### Triger -- Fr:15, FrLH:13, RrLH:35, FrRH:32, RrRH:36
     t_list=[12,16,18,22,32,36,38,40]
-    ultrasonics_dict_trig = {"Fr":t_list[0], "FrRH":t_list[1], "FrLH":t_list[2], "RrRH":t_list[3], "RrLH":t_list[4]} 
-    ultrasonics_dict_echo = {"Fr":e_list[0], "FrRH":e_list[1], "FrLH":e_list[2], "RrRH":e_list[3], "RrLH":e_list[4]} 
+    ultrasonics_dict_trig = {"Fr":t_list[0], "FrRH":t_list[1], "FrLH":t_list[2], "RrRH":t_list[3], "RrLH":t_list[4]}
+    ultrasonics_dict_echo = {"Fr":e_list[0], "FrRH":e_list[1], "FrLH":e_list[2], "RrRH":e_list[3], "RrLH":e_list[4]}
     CHANNEL_STEERING = 1 #new board
     CHANNEL_THROTTLE = 0 #new board
 
@@ -154,9 +154,9 @@ bins_Str[-1] = 100
 # コントローラー（ジョイスティックの設定）
 HAVE_CONTROLLER = True #True
 JOYSTICK_STEERING_SCALE = -1.0
-JOYSTICK_THROTTLE_SCALE = -1.0 
-#CONTROLLER_TYPE = 'F710'            
-JOYSTICK_DEVICE_FILE = "/dev/input/js0" 
+JOYSTICK_THROTTLE_SCALE = -1.0
+#CONTROLLER_TYPE = 'F710'
+JOYSTICK_DEVICE_FILE = "/dev/input/js0"
 ## ジョイスティックのボタンとスティック割り当て
 # F710の操作設定 #割り当て済み
 JOYSTICK_A = 0 #アクセル１
