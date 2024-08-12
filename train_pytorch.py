@@ -180,7 +180,7 @@ def train_model(model, dataloader, criterion, optimizer, start_epoch=0, epochs=c
         loss_history.append(loss.item())  # Record the loss value
         print(f'Epoch {epoch+1}/{epochs}, Loss: {loss.item()}')
     print("トレーニングが完了しました。")
-    
+
     # Plot and save the loss values
     plt.figure()
     plt.plot(loss_history, label='Loss')
@@ -192,7 +192,7 @@ def train_model(model, dataloader, criterion, optimizer, start_epoch=0, epochs=c
     plt.close()
     print("Lossの履歴を保存しました: "+loss_history_path)
     return epoch+1
-    
+
 
 # モデル保存関数
 def save_model(model, optimizer, folder, csv_file, epoch):
@@ -213,7 +213,7 @@ def save_model(model, optimizer, folder, csv_file, epoch):
 def load_model(model, model_path=None,optimizer=None, folder='.'):
     """
     モデルを指定したフォルダーから読み込む関数。
-    
+
     Args:
     - model: PyTorchモデルのインスタンス
     - optimizer: PyTorchのoptimizerのインスタンス（省略可能）
@@ -247,7 +247,7 @@ def load_model(model, model_path=None,optimizer=None, folder='.'):
         else:
             print("利用可能なモデルが見つかりませんでした。")
             return 0
-    
+
 
 def test_model(model, model_path, dataset,sample_num=5):
    # 推論の実行例
@@ -256,12 +256,12 @@ def test_model(model, model_path, dataset,sample_num=5):
     model_dir = "models"
     #model_name = config.model_name #"model_20240527_record_20240519_224821.csv.pth"
     #model_path = os.path.join(model_dir, model_name)
- 
+
    # 保存したモデルを再度ロード
     print("\n保存したモデルをロードします。")
     load_model(model, model_path, None, model_dir)
     print(model)
- 
+
     print("\n推論の実行例です。\nランダムに",sample_num,"コのデータを取り出して予測します。")
     # dataの取り出し
     testloader = DataLoader(dataset, batch_size=1, shuffle=True)
@@ -273,13 +273,13 @@ def test_model(model, model_path, dataset,sample_num=5):
         x1, y1 = next(tmp) # 1バッチ分のデータを取り出す
         x = torch.cat([x, x1])
         y = torch.cat([y, y1])
-        if config.model_type == "linear": 
+        if config.model_type == "linear":
             yh1 = model.predict(model, x1)
             yh = torch.cat([yh, yh1])
         elif config.model_type == "categorical":
-            yh1 = model.predict_label(model, x1)     
+            yh1 = model.predict_label(model, x1)
             yh = torch.cat([yh, torch.tensor([yh1, config.categories_Str[yh1]]).unsqueeze(0) ])
-                
+
     print("\n入力データ:")
     print(x)
     print("\n正解データ:")
@@ -287,11 +287,11 @@ def test_model(model, model_path, dataset,sample_num=5):
     print("\n予測結果:")
     print(yh)
     if config.model_type == "categorical":
-        print("\n正解率_Str: ", 
+        print("\n正解率_Str: ",
               int(torch.sum(y[:,0] == yh[:,0]).item()/sample_num*100),"%")
         print("confusion matrix_Str:\n",
               pd.crosstab(y[:,0], yh[:,0], rownames=['True'], colnames=['Predicted'], margins=True))
-        print("\n正解率_Thr: ", 
+        print("\n正解率_Thr: ",
               int(torch.sum(y[:,1] == yh[:,1]).item()/sample_num*100),"%")
 
     print("\n使用したモデル名：",os.path.split(model_path)[-1])
@@ -300,11 +300,11 @@ def test_model(model, model_path, dataset,sample_num=5):
 def main():
     # データのロード
     x_tensor, y_tensor, csv_file = load_data()
-    
+
     # データセットとデータローダーの作成
     dataset = CustomDataset(x_tensor, y_tensor)
     dataloader = DataLoader(dataset, batch_size=config.batch_size, shuffle=True)
-    
+
     # モデルの作成
     input_dim = x_tensor.shape[1]
     output_dim = y_tensor.shape[1]
@@ -317,25 +317,25 @@ def main():
     else:
         criterion = nn.MSELoss()  # Mean Squared Error for regression
     optimizer = torch.optim.Adam(model.parameters())
-        
+
     # モデルの読み込み
     continue_training = input("続きから学習を再開しますか？ (y): ").strip().lower() == 'y'
     start_epoch = 0
-    
+
     if continue_training:
         start_epoch = load_model(model, None, optimizer, 'models')
     else: start_epoch =0
     try: epochs = int(input(f"学習するエポック数を入力してください.(デフォルト:{config.epochs}): ").strip())
     except ValueError: epochs = config.epochs
-    
+
     # モデルのトレーニング
     epoch = train_model(model, dataloader, criterion, optimizer, start_epoch=start_epoch, epochs=epochs)
-    
+
     # モデルの保存
     model_path = save_model(model, optimizer, 'models', csv_file, epoch)
-    
+
     # モデルのテスト
     test_model(model, model_path,dataset)
- 
+
 if __name__ == "__main__":
     main()

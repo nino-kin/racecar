@@ -34,7 +34,7 @@ def run(*args ,**kwargs):
     global data_sh
     data_sh.append(args)
     print("print data_sh:",data_sh)
-    app.run(**kwargs)    
+    app.run(**kwargs)
 
 class VideoCamera(object):
     def __init__(self):
@@ -62,7 +62,5 @@ class VideoCamera(object):
 
 
 if __name__ == '__main__':
-    # 0.0.0.0はすべてのアクセスを受け付けます。    
+    # 0.0.0.0はすべてのアクセスを受け付けます。
     app.run(host='0.0.0.0', debug=True)
-    
-
