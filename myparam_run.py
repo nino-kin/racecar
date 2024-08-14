@@ -1,4 +1,6 @@
-# coding:utf-8
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+
 if not __name__ == "__main__":
     import config
     # ~~~出前授業用に一部のバラメータを変更

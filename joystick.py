@@ -1,12 +1,37 @@
-# coding:utf-8
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+
 import config
 import pygame
 import os
 import sys
 import numpy as np
 
-class Joystick(object):
+class Joystick:
+    """
+    A class to manage joystick functionality.
+
+    This class handles joystick initialization, state updates, and mode switching.
+    """
+
     def __init__(self, dev_fn=config.JOYSTICK_DEVICE_FILE):
+        """
+        Initialize the Joystick class.
+
+        Args:
+            dev_fn (str): The joystick device file name. Defaults to config.JOYSTICK_DEVICE_FILE.
+
+        Attributes:
+            HAVE_CONTROLLER (bool): Whether a joystick is connected.
+            stick_left (int): Axis number for the left stick.
+            stick_right (int): Axis number for the right stick.
+            button_Y, button_X, button_A, button_B, button_S (int): Button numbers.
+            steer (float): Steering value.
+            accel, accel1, accel2 (float): Acceleration values.
+            breaking (int): Braking value.
+            mode (list): List of operation modes.
+            recording (bool): Whether recording is active.
+        """
         self.HAVE_CONTROLLER = True
         self.stick_left = config.JOYSTICK_AXIS_LEFT
         self.stick_right = config.JOYSTICK_AXIS_RIGHT
@@ -22,24 +47,28 @@ class Joystick(object):
         self.breaking = 0
         self.mode = ["auto","auto_str","user"]
         self.recording = True
-        # pygameの初期化
+
+        # Initialize pygame
         pygame.init()
-        # ジョイスティックの初期化
+        # Initialize joystick module
         pygame.joystick.init()
-        # ジョイスティックインスタンスの生成
+
         try:
             self.joystick = pygame.joystick.Joystick(0)
             self.joystick.init()
-            print('ジョイスティックの名前:', self.joystick.get_name())
-            print('ボタン数 :', self.joystick.get_numbuttons())
+            print('Joystick name:', self.joystick.get_name())
+            print('Number of buttons:', self.joystick.get_numbuttons())
         except pygame.error:
             self.HAVE_CONTROLLER = False
-            print('ジョイスティックが接続されていません。ジョイスティックをOFFにします。')
+            print('No joystick connected. Disabling joystick functionality.')
 
-
-    #def poll(self,steer,accel,accel1,accel2,breaking):
     def poll(self):
-        # イベントがある場合は更新
+        """
+        Update the joystick state.
+
+        This method processes joystick events and updates steering, acceleration, and braking values.
+        It also handles mode switching and recording toggle.
+        """
         for e in pygame.event.get():
             self.steer = round(self.joystick.get_axis(self.stick_left),2)
             self.accel = round(self.joystick.get_axis(self.stick_right),2)
@@ -48,18 +77,12 @@ class Joystick(object):
             self.breaking = self.joystick.get_button(self.button_X)
             if self.joystick.get_button(self.button_S):
                 self.mode = np.roll(self.mode,1)
-                print(" mode:",self.mode[0])
+                print(" mode:", self.mode[0])
             if self.joystick.get_button(self.button_Y):
                 self.recording = not self.recording
 
-            #print()
-        #return steer,accel,accel1,accel2, breaking
-
 if __name__ == "__main__":
     joystick = Joystick()
-    #steer,accel1,accel2 = 0., 0, 0
     while True:
-        #steer,accel1,accel2 = joystick.poll(steer,accel1,accel2)
-        #print("Str:",steer,"Acc1:",accel1,"Acc2:",accel2)
         for e in pygame.event.get():
             print(e)

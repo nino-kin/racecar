@@ -1,16 +1,4 @@
-# Ninokin Racecar
-
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![Watchers][watchers-shield]][watchers-url]
-[![MIT License][license-shield]][license-url]
-
-## Quick Links
-
-[**Autonomous Minicar Battle**](https://github.com/autonomous-minicar-battle)
-| [**Slides - Google Drive**](https://drive.google.com/drive/folders/17YLekXMTtOAwoKE8AF5WkMViXlS2xn-3)
+# togikaidrive
 
 ## ***Mobility for All to Study!***
 
@@ -21,11 +9,7 @@
 
 ## 主なプログラム概要
 
-次のコマンドを実行すると、車両の走行が開始します。
-
-```bash
-python run.py
-```
+python run.pyで走行！
 
 | プログラム名 | 説明 |
 | ------------ | ---- |
@@ -298,7 +282,7 @@ T.B.D.
 
 <!-- TODO: 情報入れる -->
 
-### 制限部門貸し出しマシン2024～（試験走行中）
+### 制限部門貸し出しマシン２０２４～（試験走行中）
 
 <!-- TODO: 情報入れる -->
 
