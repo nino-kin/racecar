@@ -550,3 +550,19 @@ donkeycar 4.4.0を利用しやくするため、busterを採用。
 - コード管理：[Git](https://git-scm.com/)
 - コード配布：[GitHub](https://github.com/)
 - GUIでファイル転送：[Filezilla](https://filezilla-project.org/)
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
+[contributors-shield]: https://img.shields.io/github/contributors/nino-kin/racecar.svg?style=for-the-badge
+[contributors-url]: https://github.com/nino-kin/racecar/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/nino-kin/racecar.svg?style=for-the-badge
+[forks-url]: https://github.com/nino-kin/racecar/network/members
+[stars-shield]: https://img.shields.io/github/stars/nino-kin/racecar.svg?style=for-the-badge
+[stars-url]: https://github.com/nino-kin/racecar/stargazers
+[issues-shield]: https://img.shields.io/github/issues/nino-kin/racecar.svg?style=for-the-badge
+[issues-url]: https://github.com/nino-kin/racecar/issues
+[watchers-shield]: https://img.shields.io/github/watchers/nino-kin/racecar.svg?style=for-the-badge
+[watchers-url]: https://github.com/nino-kin/racecar/watchers
+[license-shield]: https://img.shields.io/github/license/nino-kin/racecar.svg?style=for-the-badge
+[license-url]: https://github.com/nino-kin/racecar/blob/main/LICENSE
