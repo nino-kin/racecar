@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
+"""Check the behavior of neural network model."""
 
-from train_pytorch import load_data, CustomDataset, NeuralNetwork, test_model
 import os
 import sys
 import time
 
 import config
+from train_pytorch import CustomDataset, NeuralNetwork, load_data, test_model
+
 
 def main():
-    """
-    Main function to load data, create a model, and test it.
+    """Main function to load data, create a model, and test it.
 
     This function performs the following steps:
     1. Load the data
@@ -48,6 +49,7 @@ def main():
             print("No models found.")
             sys.exit()
     test_model(model, config.model_path, dataset, x_tensor.shape[0])
+
 
 if __name__ == "__main__":
     main()

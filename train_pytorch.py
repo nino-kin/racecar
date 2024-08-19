@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
 
-"""
-This script contains functions and classes to load and preprocess data, define a neural network model, train the model, save the model, and test the model using PyTorch.
+"""This script contains functions and classes to load and preprocess data, define a neural network model, train the
+model, save the model, and test the model using PyTorch.
 
 Modules imported:
 - os
@@ -36,22 +36,23 @@ Classes:
 - NeuralNetwork: A neural network model class for PyTorch.
 """
 
-import os
-import time
-import sys
 import datetime
+import os
+import sys
+import time
+
+import matplotlib.pyplot as plt
 import pandas as pd
 import torch
-from torch import nn
 import torch.nn.functional as F
+from torch import nn
 from torch.utils.data import DataLoader
-import matplotlib.pyplot as plt
 
 import config
 
+
 def load_data():
-    """
-    Loads and preprocesses data from CSV files.
+    """Loads and preprocesses data from CSV files.
 
     Returns:
     - x_tensor (torch.Tensor): Input data tensor.
@@ -73,7 +74,10 @@ def load_data():
                 dataframes.append(df)
                 dataframe_columns.append(df.columns)
                 if len(dataframe_columns) > 1 and not all(dataframe_columns[0] == dataframe_columns[1]):
-                    print(csv_path, "の列が他のファイルと異なり結合できません。確認してください。")
+                    print(
+                        csv_path,
+                        "の列が他のファイルと異なり結合できません。確認してください。",
+                    )
                     sys.exit()
             df = pd.concat(dataframes)
         else:
@@ -96,24 +100,34 @@ def load_data():
     x_tensor = normalize_ultrasonics(x_tensor)
 
     if config.model_type == "categorical":
-        df['Str'] = pd.cut(df['Str'], bins=config.bins_Str, labels=False)
+        df["Str"] = pd.cut(df["Str"], bins=config.bins_Str, labels=False)
         y = df.iloc[:, 1:3]
         y_tensor = torch.tensor(y.values, dtype=torch.long)
-        print("\n学習データの確認:\n教師データ(ラベル:Str, Thr[学習なし]):", y_tensor[0, :], "\n入力データ(正規化センサ値):", x_tensor[0, :])
+        print(
+            "\n学習データの確認:\n教師データ(ラベル:Str, Thr[学習なし]):",
+            y_tensor[0, :],
+            "\n入力データ(正規化センサ値):",
+            x_tensor[0, :],
+        )
         print("学習データサイズ:", "y:", y_tensor.shape, "x:", x_tensor.shape, "\n")
     else:
         y = df.iloc[:, 1:3]
         y_tensor = torch.tensor(y.values, dtype=torch.float32)
         y_tensor = normalize_motor(y_tensor)
         y_tensor[:, 0] = steering_shifter_to_01(y_tensor[:, 0])
-        print("\n学習データの確認:\n教師データ(正規化操作値+0.5: Str, Thr):", y_tensor[0, :], "\n入力データ(正規化センサ値):", x_tensor[0, :])
+        print(
+            "\n学習データの確認:\n教師データ(正規化操作値+0.5: Str, Thr):",
+            y_tensor[0, :],
+            "\n入力データ(正規化センサ値):",
+            x_tensor[0, :],
+        )
         print("学習データサイズ:", "y:", y_tensor.shape, "x:", x_tensor.shape, "\n")
 
     return x_tensor, y_tensor, csv_file
 
+
 def normalize_ultrasonics(x_tensor, scale=2000):
-    """
-    Normalizes ultrasonic sensor data.
+    """Normalizes ultrasonic sensor data.
 
     Args:
     - x_tensor (torch.Tensor): Tensor of ultrasonic data.
@@ -124,9 +138,9 @@ def normalize_ultrasonics(x_tensor, scale=2000):
     """
     return x_tensor / scale
 
+
 def denormalize_ultrasonics(x_tensor, scale=2000):
-    """
-    Denormalizes ultrasonic sensor data.
+    """Denormalizes ultrasonic sensor data.
 
     Args:
     - x_tensor (torch.Tensor): Tensor of normalized ultrasonic data.
@@ -137,9 +151,9 @@ def denormalize_ultrasonics(x_tensor, scale=2000):
     """
     return x_tensor * scale
 
+
 def normalize_motor(y_tensor, scale=100):
-    """
-    Normalizes motor data.
+    """Normalizes motor data.
 
     Args:
     - y_tensor (torch.Tensor): Tensor of motor data.
@@ -150,9 +164,9 @@ def normalize_motor(y_tensor, scale=100):
     """
     return y_tensor / scale
 
+
 def denormalize_motor(y_tensor, scale=100):
-    """
-    Denormalizes motor data.
+    """Denormalizes motor data.
 
     Args:
     - y_tensor (torch.Tensor): Tensor of normalized motor data.
@@ -163,9 +177,9 @@ def denormalize_motor(y_tensor, scale=100):
     """
     return y_tensor * scale
 
+
 def steering_shifter_to_01(y_tensor):
-    """
-    Converts steering values from -1~1 to 0~1.
+    """Converts steering values from -1~1 to 0~1.
 
     Args:
     - y_tensor (torch.Tensor): Tensor of steering data.
@@ -175,9 +189,9 @@ def steering_shifter_to_01(y_tensor):
     """
     return (y_tensor + 1) / 2
 
+
 def steering_shifter_to_m11(y_tensor):
-    """
-    Converts steering values from 0~1 to -1~1.
+    """Converts steering values from 0~1 to -1~1.
 
     Args:
     - y_tensor (torch.Tensor): Tensor of steering data.
@@ -187,14 +201,15 @@ def steering_shifter_to_m11(y_tensor):
     """
     return (y_tensor - 0.5) * 2
 
+
 class CustomDataset(torch.utils.data.Dataset):
-    """
-    Custom dataset class for PyTorch.
+    """Custom dataset class for PyTorch.
 
     Args:
     - x_tensor (torch.Tensor): Input data tensor.
     - y_tensor (torch.Tensor): Target data tensor.
     """
+
     def __init__(self, x_tensor, y_tensor):
         self.x = x_tensor
         self.y = y_tensor
@@ -205,9 +220,9 @@ class CustomDataset(torch.utils.data.Dataset):
     def __getitem__(self, idx):
         return self.x[idx], self.y[idx]
 
+
 class NeuralNetwork(nn.Module):
-    """
-    Neural network model class for PyTorch.
+    """Neural network model class for PyTorch.
 
     Args:
     - input_dim (int): Dimension of the input data.
@@ -215,6 +230,7 @@ class NeuralNetwork(nn.Module):
     - hidden_dim (int): Dimension of the hidden layers.
     - num_hidden_layers (int): Number of hidden layers.
     """
+
     def __init__(self, input_dim, output_dim, hidden_dim, num_hidden_layers):
         super(NeuralNetwork, self).__init__()
         layers = [nn.Linear(input_dim, hidden_dim), nn.ReLU()]
@@ -231,8 +247,7 @@ class NeuralNetwork(nn.Module):
         self.layers = nn.Sequential(*layers)
 
     def forward(self, x):
-        """
-        Forward pass through the network.
+        """Forward pass through the network.
 
         Args:
         - x (torch.Tensor): Input tensor.
@@ -246,8 +261,7 @@ class NeuralNetwork(nn.Module):
         return x
 
     def predict(self, model, x_tensor):
-        """
-        Predict using the trained model.
+        """Predict using the trained model.
 
         Args:
         - model (nn.Module): Trained model.
@@ -269,8 +283,7 @@ class NeuralNetwork(nn.Module):
         return predictions
 
     def predict_label(self, model, x_tensor):
-        """
-        Predict labels using the trained model.
+        """Predict labels using the trained model.
 
         Args:
         - model (nn.Module): Trained model.
@@ -285,9 +298,9 @@ class NeuralNetwork(nn.Module):
             predictions = torch.argmax(predictions, dim=1)
         return predictions
 
+
 def train_model(model, dataloader, criterion, optimizer, start_epoch=0, epochs=config.epochs):
-    """
-    Train the model.
+    """Train the model.
 
     Args:
     - model (nn.Module): Model to be trained.
@@ -312,23 +325,23 @@ def train_model(model, dataloader, criterion, optimizer, start_epoch=0, epochs=c
             loss.backward()
             optimizer.step()
         loss_history.append(loss.item())
-        print(f'Epoch {epoch+1}/{epochs}, Loss: {loss.item()}')
+        print(f"Epoch {epoch+1}/{epochs}, Loss: {loss.item()}")
     print("トレーニングが完了しました。")
 
     plt.figure()
-    plt.plot(loss_history, label='Loss')
-    plt.xlabel('Epoch')
-    plt.ylabel('Loss')
+    plt.plot(loss_history, label="Loss")
+    plt.xlabel("Epoch")
+    plt.ylabel("Loss")
     plt.legend()
-    loss_history_path = config.model_dir + '/' + 'loss_history.png'
+    loss_history_path = config.model_dir + "/" + "loss_history.png"
     plt.savefig(loss_history_path)
     plt.close()
     print("Lossの履歴を保存しました: " + loss_history_path)
     return epoch + 1
 
+
 def save_model(model, optimizer, folder, csv_file, epoch):
-    """
-    Save the model state.
+    """Save the model state.
 
     Args:
     - model (nn.Module): Trained model.
@@ -342,20 +355,23 @@ def save_model(model, optimizer, folder, csv_file, epoch):
     """
     if not os.path.exists(folder):
         os.makedirs(folder)
-    date_str = datetime.datetime.now().strftime('%Y%m%d')
-    model_name = f'model_{date_str}_{csv_file}_epoch_{epoch}_{config.ultrasonics_list_join}.pth'
+    date_str = datetime.datetime.now().strftime("%Y%m%d")
+    model_name = f"model_{date_str}_{csv_file}_epoch_{epoch}_{config.ultrasonics_list_join}.pth"
     model_path = os.path.join(folder, model_name)
-    torch.save({
-        'epoch': epoch,
-        'model_state_dict': model.state_dict(),
-        'optimizer_state_dict': optimizer.state_dict()
-    }, model_path)
+    torch.save(
+        {
+            "epoch": epoch,
+            "model_state_dict": model.state_dict(),
+            "optimizer_state_dict": optimizer.state_dict(),
+        },
+        model_path,
+    )
     print(f"モデルを保存しました: {model_name}")
     return model_path
 
-def load_model(model, model_path=None, optimizer=None, folder='.'):
-    """
-    Load a saved model state.
+
+def load_model(model, model_path=None, optimizer=None, folder="."):
+    """Load a saved model state.
 
     Args:
     - model (nn.Module): Model instance.
@@ -367,33 +383,37 @@ def load_model(model, model_path=None, optimizer=None, folder='.'):
     """
     if model_path:
         checkpoint = torch.load(model_path)
-        model.load_state_dict(checkpoint['model_state_dict'])
+        model.load_state_dict(checkpoint["model_state_dict"])
         if optimizer:
-            optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+            optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
             print("オプティマイザの状態も読み込みました。")
         print(f"モデルを読み込みました: {model_path}")
-        return checkpoint.get('epoch', 0)
+        return checkpoint.get("epoch", 0)
     else:
-        model_files = [file for file in os.listdir(folder) if file.startswith('model_')]
+        model_files = [file for file in os.listdir(folder) if file.startswith("model_")]
         if model_files:
             print("利用可能なモデル:")
             print(model_files)
-            model_name = input("読み込むモデル名を入力してください.\n[WARN] 過去にモデル構造を変更している場合は読み込めませんので、config.pyを編集してください。\n: ")
+            model_name = input(
+                """読み込むモデル名を入力してください.
+            [WARN] 過去にモデル構造を変更している場合は読み込めませんので、config.pyを編集してください。
+            : """
+            )
             model_path = os.path.join(folder, model_name)
             checkpoint = torch.load(model_path)
-            model.load_state_dict(checkpoint['model_state_dict'])
+            model.load_state_dict(checkpoint["model_state_dict"])
             if optimizer:
-                optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+                optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
                 print("オプティマイザの状態も読み込みました。")
             print(f"モデルを読み込みました: {model_name}")
-            return checkpoint.get('epoch', 0)
+            return checkpoint.get("epoch", 0)
         else:
             print("利用可能なモデルが見つかりませんでした。")
             return 0
 
+
 def test_model(model, model_path, dataset, sample_num=5):
-    """
-    Test the model by making predictions on a sample of data.
+    """Test the model by making predictions on a sample of data.
 
     Args:
     - model (nn.Module): Trained model.
@@ -406,7 +426,11 @@ def test_model(model, model_path, dataset, sample_num=5):
     load_model(model, model_path, None, model_dir)
     print(model)
 
-    print("\n推論の実行例です。\nランダムに", sample_num, "コのデータを取り出して予測します。")
+    print(
+        "\n推論の実行例です。\nランダムに",
+        sample_num,
+        "コのデータを取り出して予測します。",
+    )
     testloader = DataLoader(dataset, batch_size=1, shuffle=True)
     tmp = iter(testloader)
     x = torch.tensor([])
@@ -430,16 +454,32 @@ def test_model(model, model_path, dataset, sample_num=5):
     print("\n予測結果:")
     print(yh)
     if config.model_type == "categorical":
-        print("\n正解率_Str: ", int(torch.sum(y[:, 0] == yh[:, 0]).item() / sample_num * 100), "%")
-        print("confusion matrix_Str:\n", pd.crosstab(y[:, 0], yh[:, 0], rownames=['True'], colnames=['Predicted'], margins=True))
-        print("\n正解率_Thr: ", int(torch.sum(y[:, 1] == yh[:, 1]).item() / sample_num * 100), "%")
+        print(
+            "\n正解率_Str: ",
+            int(torch.sum(y[:, 0] == yh[:, 0]).item() / sample_num * 100),
+            "%",
+        )
+        print(
+            "confusion matrix_Str:\n",
+            pd.crosstab(
+                y[:, 0],
+                yh[:, 0],
+                rownames=["True"],
+                colnames=["Predicted"],
+                margins=True,
+            ),
+        )
+        print(
+            "\n正解率_Thr: ",
+            int(torch.sum(y[:, 1] == yh[:, 1]).item() / sample_num * 100),
+            "%",
+        )
 
     print("\n使用したモデル名:", os.path.split(model_path)[-1])
 
+
 def main():
-    """
-    Main function to load data, create and train the model, save the model, and test the model.
-    """
+    """Main function to load data, create and train the model, save the model, and test the model."""
     x_tensor, y_tensor, csv_file = load_data()
 
     dataset = CustomDataset(x_tensor, y_tensor)
@@ -456,11 +496,11 @@ def main():
         criterion = nn.MSELoss()
     optimizer = torch.optim.Adam(model.parameters())
 
-    continue_training = input("続きから学習を再開しますか？ (y): ").strip().lower() == 'y'
+    continue_training = input("続きから学習を再開しますか？ (y): ").strip().lower() == "y"
     start_epoch = 0
 
     if continue_training:
-        start_epoch = load_model(model, None, optimizer, 'models')
+        start_epoch = load_model(model, None, optimizer, "models")
     else:
         start_epoch = 0
     try:
@@ -470,9 +510,10 @@ def main():
 
     epoch = train_model(model, dataloader, criterion, optimizer, start_epoch=start_epoch, epochs=epochs)
 
-    model_path = save_model(model, optimizer, 'models', csv_file, epoch)
+    model_path = save_model(model, optimizer, "models", csv_file, epoch)
 
     test_model(model, model_path, dataset)
+
 
 if __name__ == "__main__":
     main()

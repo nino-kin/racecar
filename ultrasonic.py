@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
 
-"""
-This script contains a class for handling ultrasonic sensors using Raspberry Pi GPIO pins, as well as a main function to
-measure distances and log data. The script uses the RPi.GPIO library for GPIO pin control and numpy for data handling.
+"""This script contains a class for handling ultrasonic sensors using Raspberry Pi GPIO pins, as well as a main function
+to measure distances and logs. The script uses the RPi.GPIO library for GPIO pin control and numpy for data handling.
 
 Modules imported:
 - time
@@ -20,13 +19,15 @@ Functions:
 """
 
 import time
-import RPi.GPIO as GPIO
-import config
+
 import numpy as np
+import RPi.GPIO as GPIO
+
+import config
+
 
 class Ultrasonic:
-    """
-    A class to handle ultrasonic sensor measurements.
+    """A class to handle ultrasonic sensor measurements.
 
     Attributes:
     - name (str): Name of the ultrasonic sensor.
@@ -35,12 +36,12 @@ class Ultrasonic:
     - records (np.ndarray): Array to store past measurements.
     - dis (int): Distance measured.
     """
-    def __init__(self, name):
-        """
-        Initializes the Ultrasonic sensor with the specified name.
+
+    def __init__(self, name: str):
+        """Initializes the Ultrasonic sensor with the specified name.
 
         Args:
-        - name (str): Name of the ultrasonic sensor.
+            name (str): Name of the ultrasonic sensor.
         """
         self.name = name
         self.trig = config.ultrasonics_dict_trig[name]
@@ -48,9 +49,8 @@ class Ultrasonic:
         self.records = np.zeros(config.ultrasonics_Nrecords)
         self.dis = 0
 
-    def measure(self):
-        """
-        Measures the distance using the ultrasonic sensor.
+    def measure(self) -> int:
+        """Measures the distance using the ultrasonic sensor.
 
         Returns:
         - int: Measured distance.
@@ -62,11 +62,11 @@ class Ultrasonic:
         time.sleep(0.00001)
         GPIO.output(self.trig, GPIO.LOW)
         starttime = time.perf_counter()
-        while(GPIO.input(self.echo) == GPIO.LOW):
+        while GPIO.input(self.echo) == GPIO.LOW:
             sigoff = time.perf_counter()
             if sigoff - starttime > 0.02:
                 break
-        while(GPIO.input(self.echo) == GPIO.HIGH):
+        while GPIO.input(self.echo) == GPIO.HIGH:
             sigon = time.perf_counter()
             if sigon - sigoff > 0.02:
                 break
@@ -85,6 +85,7 @@ class Ultrasonic:
         self.records = np.insert(self.records, 0, self.dis)
         self.records = np.delete(self.records, -1)
         return self.dis
+
 
 if __name__ == "__main__":
     GPIO.setwarnings(False)
@@ -113,8 +114,8 @@ if __name__ == "__main__":
     sampling_cycle = config.sampling_cycle / len(ultrasonics)
 
     # Pause until Enter is pressed to start measurements
-    print('Enter the number of measurements, press Enter to start')
-    print(f'Default if only Enter is pressed: {sampling_times}')
+    print("Enter the number of measurements, press Enter to start")
+    print(f"Default if only Enter is pressed: {sampling_times}")
     # Confirm input
     while True:
         sampling_times = input()
@@ -125,7 +126,7 @@ if __name__ == "__main__":
             break
         else:
             print("Enter an integer greater than 0...")
-    print(f'Starting {sampling_times} measurements!')
+    print(f"Starting {sampling_times} measurements!")
     # Convert input to int
     sampling_times = int(sampling_times)
 
@@ -142,14 +143,20 @@ if __name__ == "__main__":
             d_stack = np.vstack((d_stack, np.insert(d, 0, time.perf_counter() - start_time)))
             print(message)
         GPIO.cleanup()
-        np.savetxt(config.record_filename, d_stack, fmt='%.3e')
+        np.savetxt(config.record_filename, d_stack, fmt="%.3e")
         # Calculate and display average distance over time
-        print('Number of measurements: ', sampling_times)
-        print('Average distance:', np.round(np.mean(d_stack[:, 1:], axis=0), 0))
-        print("Average measurement time per sensor (seconds):", round((time.perf_counter() - start_time) / sampling_times / len(ultrasonics), 2))
+        print("Number of measurements: ", sampling_times)
+        print("Average distance:", np.round(np.mean(d_stack[:, 1:], axis=0), 0))
+        print(
+            "Average measurement time per sensor (seconds):",
+            round(
+                (time.perf_counter() - start_time) / sampling_times / len(ultrasonics),
+                2,
+            ),
+        )
         print(f"Saved record to {config.record_filename}")
 
     except KeyboardInterrupt:
-        np.savetxt(config.record_filename, d_stack, fmt='%.3e')
-        print('Stop!')
+        np.savetxt(config.record_filename, d_stack, fmt="%.3e")
+        print("Stop!")
         GPIO.cleanup()

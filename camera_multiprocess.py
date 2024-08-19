@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
+"""Capture camera data."""
 
 from __future__ import annotations
 
@@ -8,17 +9,20 @@ import multiprocessing
 import multiprocessing.sharedctypes
 import multiprocessing.synchronize
 import signal
-from time import perf_counter, time
+from time import perf_counter
 from typing import cast
 
 import cv2
 import numpy as np
 
-import config
 
-def _update(args: tuple, buffer: ctypes.Array[ctypes.c_uint8], ready: multiprocessing.synchronize.Event, cancel: multiprocessing.synchronize.Event):
-    """
-    Function responsible for video capture and buffer updating.
+def _update(
+    args: tuple,
+    buffer: ctypes.Array[ctypes.c_uint8],
+    ready: multiprocessing.synchronize.Event,
+    cancel: multiprocessing.synchronize.Event,
+) -> None:
+    """Function responsible for video capture and buffer updating.
 
     Args:
         args (tuple): Arguments for video capture
@@ -47,7 +51,7 @@ def _update(args: tuple, buffer: ctypes.Array[ctypes.c_uint8], ready: multiproce
 
             # Prepare for buffer update
             ready.clear()
-            memoryview(buffer).cast('B')[:] = memoryview(img).cast('B')[:]
+            memoryview(buffer).cast("B")[:] = memoryview(img).cast("B")[:]
             ready.set()
 
     finally:
@@ -55,9 +59,8 @@ def _update(args: tuple, buffer: ctypes.Array[ctypes.c_uint8], ready: multiproce
         video_capture.release()
 
 
-def _get_information(args: tuple):
-    """
-    Function responsible for getting video information.
+def _get_information(args: tuple) -> None:
+    """Function responsible for getting video information.
 
     Args:
         args (tuple): Arguments for video capture
@@ -88,13 +91,10 @@ def _get_information(args: tuple):
 
 
 class VideoCaptureWrapper:
-    """
-    A wrapper class for video capture.
-    """
+    """A wrapper class for video capture."""
 
     def __init__(self, *args) -> None:
-        """
-        Initialize VideoCaptureWrapper.
+        """Initialize VideoCaptureWrapper.
 
         Args:
             *args: Arguments for video capture
@@ -106,23 +106,24 @@ class VideoCaptureWrapper:
         height, width, channels = self.__shape
 
         # Create shared buffer
-        self.__buffer = multiprocessing.sharedctypes.RawArray(
-            ctypes.c_uint8, height * width * channels)
+        self.__buffer = multiprocessing.sharedctypes.RawArray(ctypes.c_uint8, height * width * channels)
 
         # Create synchronization events
         self.__ready = multiprocessing.Event()
         self.__cancel = multiprocessing.Event()
 
         # Start capture process
-        self.__enqueue = multiprocessing.Process(target=_update, args=(
-            args, self.__buffer, self.__ready, self.__cancel), daemon=True)
+        self.__enqueue = multiprocessing.Process(
+            target=_update,
+            args=(args, self.__buffer, self.__ready, self.__cancel),
+            daemon=True,
+        )
         self.__enqueue.start()
 
         self.__released = cast(bool, False)
 
     def read(self):
-        """
-        Get a frame.
+        """Get a frame.
 
         Returns:
             tuple: (bool, np.ndarray) Success flag and frame image
@@ -131,7 +132,7 @@ class VideoCaptureWrapper:
         self.currentframe = np.reshape(self.__buffer, self.__shape).copy()
         return cast(bool, True), self.currentframe
 
-    def release(self):
+    def release(self) -> None:
         """Release the capture."""
         if self.__released:
             return
@@ -148,8 +149,7 @@ class VideoCaptureWrapper:
             pass
 
     def save(self, img, ts, steer, throttle, image_dir):
-        """
-        Save an image.
+        """Save an image.
 
         Args:
             img (np.ndarray): Image to save
@@ -162,11 +162,15 @@ class VideoCaptureWrapper:
             np.ndarray: Saved image
         """
         try:
-            cv2.imwrite(image_dir +'/' + str(ts)[:13] +'_'+ str(steer) +'_'+ str(throttle) +'.jpg', img)
+            cv2.imwrite(
+                image_dir + "/" + str(ts)[:13] + "_" + str(steer) + "_" + str(throttle) + ".jpg",
+                img,
+            )
             return img
         except:
             print("Cannot save image!")
             pass
+
 
 if __name__ == "__main__":
     print(" Note: If the camera is already running with red LED on, resource busy, please restart!\n")
@@ -180,11 +184,11 @@ if __name__ == "__main__":
         while True:
             start_time = perf_counter()
             _, img = video_capture.read()
-            print( "fps:" + str(round(1/(perf_counter() - start_time))))
+            print("fps:" + str(round(1 / (perf_counter() - start_time))))
             try:
                 pass
             # In case of no local screen output
-            except :
+            except:
                 pass
 
     except KeyboardInterrupt:

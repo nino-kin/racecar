@@ -1,24 +1,27 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
 
-import numpy as np
-import config
 import time
+
+import numpy as np
+
+import config
+
 if config.HAVE_NN:
     import torch.tensor
+
     from train_pytorch import denormalize_motor, normalize_ultrasonics
 
+
 class Planner:
-    """
-    A class for planning and controlling the movement of a robot.
+    """A class for planning and controlling the movement of a robot.
 
     This class implements various methods for navigation using ultrasonic sensors,
     including simple obstacle avoidance, wall following, and neural network-based control.
     """
 
     def __init__(self, name):
-        """
-        Initialize the Planner.
+        """Initialize the Planner.
 
         Args:
             name (str): The name of the planner.
@@ -50,8 +53,7 @@ class Planner:
         self.records_throttle_pwm_duty = np.zeros(config.motor_Nrecords)
 
     def Back(self, ultrasonic_Fr, ultrasonic_FrRH, ultrasonic_FrLH):
-        """
-        Determine if the robot should move backwards based on front sensor readings.
+        """Determine if the robot should move backwards based on front sensor readings.
 
         Args:
             ultrasonic_Fr (Ultrasonic): Front ultrasonic sensor.
@@ -59,27 +61,32 @@ class Planner:
             ultrasonic_FrLH (Ultrasonic): Front-left ultrasonic sensor.
         """
         times = 3
-        if min(max(ultrasonic_Fr.records[:times]), max(ultrasonic_FrRH.records[:times]), max(ultrasonic_FrLH.records[:times])) < self.DETECTION_DISTANCE_BACK:
+        if (
+            min(
+                max(ultrasonic_Fr.records[:times]),
+                max(ultrasonic_FrRH.records[:times]),
+                max(ultrasonic_FrLH.records[:times]),
+            )
+            < self.DETECTION_DISTANCE_BACK
+        ):
             self.flag_back = True
             print("Backing up")
         elif max(ultrasonic_Fr.records[:times]) > self.DETECTION_DISTANCE_BACK:
             self.flag_back = False
 
     def Stop(self, ultrasonic_Fr):
-        """
-        Determine if the robot should stop based on front sensor reading.
+        """Determine if the robot should stop based on front sensor reading.
 
         Args:
             ultrasonic_Fr (Ultrasonic): Front ultrasonic sensor.
         """
         times = 3
-        if max(ultrasonic_Fr.records[0:times-1]) < self.DETECTION_DISTANCE_STOP:
+        if max(ultrasonic_Fr.records[0 : times - 1]) < self.DETECTION_DISTANCE_STOP:
             self.flag_stop = True
             print("Stopping")
 
     def Right_Left_3(self, dis_FrLH, dis_Fr, dis_FrRH):
-        """
-        Determine movement based on three front sensors.
+        """Determine movement based on three front sensors.
 
         Args:
             dis_FrLH (float): Distance from front-left sensor.
@@ -89,7 +96,11 @@ class Planner:
         Returns:
             tuple: Steering and throttle PWM duty cycles.
         """
-        if dis_Fr < self.DETECTION_DISTANCE_Fr or dis_FrLH < self.DETECTION_DISTANCE_RL or dis_FrRH < self.DETECTION_DISTANCE_RL:
+        if (
+            dis_Fr < self.DETECTION_DISTANCE_Fr
+            or dis_FrLH < self.DETECTION_DISTANCE_RL
+            or dis_FrRH < self.DETECTION_DISTANCE_RL
+        ):
             if dis_FrLH < dis_FrRH:
                 self.steer_pwm_duty = config.RIGHT
                 self.throttle_pwm_duty = config.FORWARD_C
@@ -99,7 +110,7 @@ class Planner:
                 self.throttle_pwm_duty = config.FORWARD_C
                 self.message = "Turning left"
         else:
-            self.steer_pwm_duty = config.NUTRAL
+            self.steer_pwm_duty = config.NEUTRAL
             self.throttle_pwm_duty = config.FORWARD_S
             self.message = "Moving straight"
 
@@ -108,8 +119,7 @@ class Planner:
         return self.steer_pwm_duty, self.throttle_pwm_duty
 
     def Right_Left_3_Records(self, dis_FrLH, dis_Fr, dis_FrRH):
-        """
-        Determine movement based on three front sensors with smoothing.
+        """Determine movement based on three front sensors with smoothing.
 
         Args:
             dis_FrLH (float): Distance from front-left sensor.
@@ -119,20 +129,27 @@ class Planner:
         Returns:
             tuple: Smoothed steering and throttle PWM duty cycles.
         """
-        self.steer_pwm_duty, self.throttle_pwm_duty = self.Right_Left_3(dis_FrLH, dis_Fr, dis_FrRH)
+        self.steer_pwm_duty, self.throttle_pwm_duty = self.Right_Left_3(
+            dis_FrLH, dis_Fr, dis_FrRH
+        )
 
-        self.records_steer_pwm_duty = np.insert(self.records_steer_pwm_duty, 0, self.steer_pwm_duty)
+        self.records_steer_pwm_duty = np.insert(
+            self.records_steer_pwm_duty, 0, self.steer_pwm_duty
+        )
         self.records_steer_pwm_duty = np.delete(self.records_steer_pwm_duty, -1)
-        self.records_throttle_pwm_duty = np.insert(self.records_throttle_pwm_duty, 0, self.throttle_pwm_duty)
+        self.records_throttle_pwm_duty = np.insert(
+            self.records_throttle_pwm_duty, 0, self.throttle_pwm_duty
+        )
         self.records_throttle_pwm_duty = np.delete(self.records_throttle_pwm_duty, -1)
 
         if config.print_plan_result:
             print(self.message)
-        return np.mean(self.records_steer_pwm_duty), np.mean(self.records_throttle_pwm_duty)
+        return np.mean(self.records_steer_pwm_duty), np.mean(
+            self.records_throttle_pwm_duty
+        )
 
     def RightHand(self, dis_FrRH, dis_RrRH):
-        """
-        Implement right-hand wall following.
+        """Implement right-hand wall following.
 
         Args:
             dis_FrRH (float): Distance from front-right sensor.
@@ -142,17 +159,24 @@ class Planner:
             tuple: Steering and throttle PWM duty cycles.
         """
         # The vehicle is a large distance from the wall on the right side
-        if dis_FrRH > self.DETECTION_DISTANCE_TARGET + self.DETECTION_DISTANCE_RANGE and dis_RrRH > self.DETECTION_DISTANCE_TARGET + self.DETECTION_DISTANCE_RANGE:
+        if (
+            dis_FrRH > self.DETECTION_DISTANCE_TARGET + self.DETECTION_DISTANCE_RANGE
+            and dis_RrRH
+            > self.DETECTION_DISTANCE_TARGET + self.DETECTION_DISTANCE_RANGE
+        ):
             self.steer_pwm_duty = config.RIGHT
             self.throttle_pwm_duty = config.FORWARD_C
             self.message = "Turning right"
         # The vehicle is approaching the wall on the right.
-        elif dis_FrRH < self.DETECTION_DISTANCE_TARGET - self.DETECTION_DISTANCE_RANGE or dis_RrRH < self.DETECTION_DISTANCE_TARGET - self.DETECTION_DISTANCE_RANGE:
+        elif (
+            dis_FrRH < self.DETECTION_DISTANCE_TARGET - self.DETECTION_DISTANCE_RANGE
+            or dis_RrRH < self.DETECTION_DISTANCE_TARGET - self.DETECTION_DISTANCE_RANGE
+        ):
             self.steer_pwm_duty = config.LEFT
             self.throttle_pwm_duty = config.FORWARD_C
             self.message = "Turning left"
         else:
-            self.steer_pwm_duty = config.NUTRAL
+            self.steer_pwm_duty = config.NEUTRAL
             self.throttle_pwm_duty = config.FORWARD_S
             self.message = "Moving straight"
 
@@ -161,8 +185,7 @@ class Planner:
         return self.steer_pwm_duty, self.throttle_pwm_duty
 
     def LeftHand(self, dis_FrLH, dis_RrLH):
-        """
-        Implement left-hand wall following.
+        """Implement left-hand wall following.
 
         Args:
             dis_FrLH (float): Distance from front-left sensor.
@@ -171,16 +194,23 @@ class Planner:
         Returns:
             tuple: Steering and throttle PWM duty cycles.
         """
-        if dis_FrLH > self.DETECTION_DISTANCE_TARGET + self.DETECTION_DISTANCE_RANGE and dis_RrLH > self.DETECTION_DISTANCE_TARGET + self.DETECTION_DISTANCE_RANGE:
+        if (
+            dis_FrLH > self.DETECTION_DISTANCE_TARGET + self.DETECTION_DISTANCE_RANGE
+            and dis_RrLH
+            > self.DETECTION_DISTANCE_TARGET + self.DETECTION_DISTANCE_RANGE
+        ):
             self.steer_pwm_duty = config.LEFT
             self.throttle_pwm_duty = config.FORWARD_C
             self.message = "Turning left"
-        elif dis_FrLH < self.DETECTION_DISTANCE_TARGET - self.DETECTION_DISTANCE_RANGE or dis_RrLH < self.DETECTION_DISTANCE_TARGET - self.DETECTION_DISTANCE_RANGE:
+        elif (
+            dis_FrLH < self.DETECTION_DISTANCE_TARGET - self.DETECTION_DISTANCE_RANGE
+            or dis_RrLH < self.DETECTION_DISTANCE_TARGET - self.DETECTION_DISTANCE_RANGE
+        ):
             self.steer_pwm_duty = config.RIGHT
             self.throttle_pwm_duty = config.FORWARD_C
             self.message = "Turning right"
         else:
-            self.steer_pwm_duty = config.NUTRAL
+            self.steer_pwm_duty = config.NEUTRAL
             self.throttle_pwm_duty = config.FORWARD_S
             self.message = "Moving straight"
 
@@ -188,9 +218,15 @@ class Planner:
             print(self.message)
         return self.steer_pwm_duty, self.throttle_pwm_duty
 
-    def RightHand_PID(self, ultrasonic_FrRH, ultrasonic_RrRH, t=0, integral_delta_dis=0, min_dis=config.DETECTION_DISTANCE_TARGET):
-        """
-        Implement right-hand wall following with PID control.
+    def RightHand_PID(
+        self,
+        ultrasonic_FrRH,
+        ultrasonic_RrRH,
+        t=0,
+        integral_delta_dis=0,
+        min_dis=config.DETECTION_DISTANCE_TARGET,
+    ):
+        """Implement right-hand wall following with PID control.
 
         Args:
             ultrasonic_FrRH (Ultrasonic): Front-right ultrasonic sensor.
@@ -215,19 +251,36 @@ class Planner:
         # 速度更新
         v = (min_dis - min_dis_before) / delta_t
         # PID制御でステア値更新
-        steer_pwm_duty_pid = self.K_P * delta_dis - self.K_D * v + self.K_I * integral_delta_dis
+        steer_pwm_duty_pid = (
+            self.K_P * delta_dis - self.K_D * v + self.K_I * integral_delta_dis
+        )
         ### -100~100に収めて正の割合化
         steer_pwm_duty_pid = abs(max(-100, min(100, steer_pwm_duty_pid)) / 100)
 
         ## モーターへ出力を返す
         if config.print_plan_result:
-            print("output * PID:{:3.1f}, [P:{:3.1f}, I:{:3.1f}, D:{:3.1f}]".format(steer_pwm_duty_pid, self.K_P*delta_dis, self.K_D*v, self.K_I*integral_delta_dis))
-        self.steer_pwm_duty, self.throttle_pwm_duty = self.RightHand(ultrasonic_FrRH.dis, ultrasonic_RrRH.dis)
+            print(
+                "output * PID:{:3.1f}, [P:{:3.1f}, I:{:3.1f}, D:{:3.1f}]".format(
+                    steer_pwm_duty_pid,
+                    self.K_P * delta_dis,
+                    self.K_D * v,
+                    self.K_I * integral_delta_dis,
+                )
+            )
+        self.steer_pwm_duty, self.throttle_pwm_duty = self.RightHand(
+            ultrasonic_FrRH.dis, ultrasonic_RrRH.dis
+        )
         return steer_pwm_duty_pid * self.steer_pwm_duty, self.throttle_pwm_duty
 
-    def LeftHand_PID(self, ultrasonic_FrLH, ultrasonic_RrLH, t=0, integral_delta_dis=0, min_dis=config.DETECTION_DISTANCE_TARGET):
-        """
-        Implement left-hand wall following with PID control.
+    def LeftHand_PID(
+        self,
+        ultrasonic_FrLH,
+        ultrasonic_RrLH,
+        t=0,
+        integral_delta_dis=0,
+        min_dis=config.DETECTION_DISTANCE_TARGET,
+    ):
+        """Implement left-hand wall following with PID control.
 
         Args:
             ultrasonic_FrLH (Ultrasonic): Front-left ultrasonic sensor.
@@ -252,22 +305,32 @@ class Planner:
         # 速度更新
         v = (min_dis - min_dis_before) / delta_t
         # PID制御でステア値更新
-        steer_pwm_duty_pid = self.K_P * delta_dis - self.K_D * v + self.K_I * integral_delta_dis
+        steer_pwm_duty_pid = (
+            self.K_P * delta_dis - self.K_D * v + self.K_I * integral_delta_dis
+        )
         ### -100~100に収めて正の割合化
         steer_pwm_duty_pid = abs(max(-100, min(100, steer_pwm_duty_pid)) / 100)
 
         ## モーターへ出力を返す
         if config.print_plan_result:
-            print("output * PID:{:3.1f}, [P:{:3.1f}, I:{:3.1f}, D:{:3.1f}]".format(steer_pwm_duty_pid, self.K_P*delta_dis, self.K_D*v, self.K_I*integral_delta_dis))
-        self.steer_pwm_duty, self.throttle_pwm_duty = self.LeftHand(ultrasonic_FrLH.dis, ultrasonic_RrLH.dis)
+            print(
+                "output * PID:{:3.1f}, [P:{:3.1f}, I:{:3.1f}, D:{:3.1f}]".format(
+                    steer_pwm_duty_pid,
+                    self.K_P * delta_dis,
+                    self.K_D * v,
+                    self.K_I * integral_delta_dis,
+                )
+            )
+        self.steer_pwm_duty, self.throttle_pwm_duty = self.LeftHand(
+            ultrasonic_FrLH.dis, ultrasonic_RrLH.dis
+        )
         return steer_pwm_duty_pid * self.steer_pwm_duty, self.throttle_pwm_duty
 
     # Neural Netを用いた走行
     if config.HAVE_NN:
         # train_pytorch.py内ので正規化処理を用いる
         def NN(self, model, *args):
-            """
-            Use a neural network model for navigation.
+            """Use a neural network model for navigation.
 
             Args:
                 model: The neural network model.
@@ -277,7 +340,9 @@ class Planner:
                 tuple: Steering and throttle PWM duty cycles predicted by the neural network.
             """
             ultrasonic_values = args
-            input = normalize_ultrasonics(torch.tensor(ultrasonic_values, dtype=torch.float32).unsqueeze(0))
+            input = normalize_ultrasonics(
+                torch.tensor(ultrasonic_values, dtype=torch.float32).unsqueeze(0)
+            )
             output = denormalize_motor(model.predict(model, input).squeeze(0))
             self.steer_pwm_duty = int(output[0])
             self.throttle_pwm_duty = int(output[1])
