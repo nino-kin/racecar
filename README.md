@@ -1,6 +1,6 @@
 # togikaidrive
 
-## ***Mobility for All to Study!***
+## **_Mobility for All to Study!_**
 
 超音波センサ等で自動運転するミニカーの制御プログラム。
 自動運転ミニカーバトルと出前授業等で活用。
@@ -11,19 +11,19 @@
 
 python run.pyで走行！
 
-| プログラム名 | 説明 |
-| ------------ | ---- |
-| run.py | 走行時のループ処理をするメインプログラム |
-| config.py | パラメータ用プログラム |
-| ultrasonic.py | 超音波測定用プログラム |
-| planner.py | 走行ロジック用プログラム |
-| motor.py | 操舵・モーター出力/調整用プログラム |
-| train_pytorch.py | 機械学習用プログラム |
+| File name        | Description                              |
+| ---------------- | ---------------------------------------- |
+| run.py           | 走行時のループ処理をするメインプログラム |
+| config.py        | パラメータ用プログラム                   |
+| ultrasonic.py    | 超音波測定用プログラム                   |
+| planner.py       | 走行ロジック用プログラム                 |
+| motor.py         | 操舵・モーター出力/調整用プログラム      |
+| train_pytorch.py | 機械学習用プログラム                     |
 
 ![alt text](assets/images/programimage.png)
 
 > [!NOTE]
-> それぞれのプログラムは単独チェック等で活用  。
+> それぞれのプログラムは単独チェック等で活用。
 > なるべく授業活用しやすい、変更しやすいコードを目指す。
 
 ## 体験型授業
@@ -146,7 +146,7 @@ model_type = "categorical" #linear, categorical
 # カテゴリの設定、カテゴリ数は揃える↓　
 num_categories = 3
 # -100~100の範囲で小さな値→大きな値の順にする（しないとValueError: bins must increase monotonically.）
-categories_Str = [RIGHT, NUTRAL, LEFT]
+categories_Str = [RIGHT, NEUTRAL, LEFT]
 categories_Thr = [FORWARD_C, FORWARD_S, FORWARD_C] #Strに合わせて設定
 ...
 
@@ -253,30 +253,30 @@ T.B.D.
 
 #### BOM（部品表）
 
-| 分類 | 名称 | 個数 | 概算コスト(円) | 説明 |
-| ---- | ---- | ---- | ---- | ---- |
-| コンピュータ | [ラズパイ3B+](https://www.raspberrypi.com/products/raspberry-pi-3-model-b-plus/) |1| ---- |　販売終了 |
-| コンピュータ | [ラズパイ3A](https://raspberry-pi.ksyic.com/main/index/pdp.id/512/pdp.open/512) |-| 5000 |（代替）|
-| コンピュータ | [ラズパイ4B](https://akizukidenshi.com/catalog/g/g114839/) |-| 10000 |（代替）|
-| SDカード | 配布時期による |1| ---- | 64GB以上、書き込み速度30MB/s以上推奨 |
-| 距離センサ | [超音波距離センサー HC-SR04](https://akizukidenshi.com/catalog/g/g111009/) |5| 1500 | [データシート](https://akizukidenshi.com/goodsaffix/hc-sr04_v20.pdf)
-| ジャイロ加速度センサ | [BNO055使用 9軸センサーフュージョンモジュールキット](https://akizukidenshi.com/catalog/g/g116996/) |任意| 2500 | [データシート](https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bno055-ds000.pdf)
-| カメラ | [ラズベリー•パイ（Raspberry Pi）160°広角500MP](https://jp.sainsmart.com/products/wide-angle-fov160-5-megapixel-camera-module-for-raspberry-pi) |任意| 3000 |　コース内特徴を捉えるため、広角推奨。
-| シャーシ | [RCスターユニット 1/14 エアロ アバンテ](https://tamiyashop.jp/shop/g/g57402/) |1| 6500 |　販売終了 |
-| モーター | シャーシに含む |1| ---- |
-| コンピュータ用バッテリ | [Anker PowerCore Fusion 5000](https://amzn.asia/d/b78Zim4) |1| 3600 | |
-| 駆動用バッテリ | [単３電池]() |4| 400 | |
-| モータドライバ | [RC ESC 20A ブラシモーター](https://www.amazon.co.jp/GoolRC-%E3%83%96%E3%83%A9%E3%82%B7%E3%83%A2%E3%83%BC%E3%82%BF%E3%83%BC-%E3%82%B9%E3%83%94%E3%83%BC%E3%83%89%E3%82%B3%E3%83%B3%E3%83%88%E3%83%AD%E3%83%BC%E3%83%A9%E3%83%BC-%E5%88%87%E3%82%8A%E6%9B%BF%E3%81%88%E5%8F%AF%E8%83%BD-%E3%83%96%E3%83%AC%E3%83%BC%E3%82%AD%E4%BB%98/dp/B014RB6WS6) |1| 1500 | |
-| サーボドライバ | [PCA9685 16チャンネル 12-ビット PWM Servo モーター ドライバー](https://amzn.asia/d/0sswysQ) |1| 1000 | |
-| コントローラー | [Logicool G ゲームパッド コントローラー F710](https://www.amazon.co.jp/%E3%83%AD%E3%82%B8%E3%82%AF%E3%83%BC%E3%83%AB-F710r-%E3%80%90%E3%83%A2%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%BC%E3%83%8F%E3%83%B3%E3%82%BF%E3%83%BC%E3%83%95%E3%83%AD%E3%83%B3%E3%83%86%E3%82%A3%E3%82%A2%E6%AD%A3%E5%BC%8F%E6%8E%A8%E5%A5%A8%E3%80%91-LOGICOOL-%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%AC%E3%82%B9%E3%82%B2%E3%83%BC%E3%83%A0%E3%83%91%E3%83%83%E3%83%89/dp/B00CDG7994) |1| 4000 | |
-| 締結部品 | [2mm六角スペーサ](https://www.amazon.co.jp/%E3%83%8A%E3%82%A4%E3%83%AD%E3%83%B3%E3%83%8D%E3%82%B8%E3%83%8A%E3%83%83%E3%83%88-320%E5%80%8B%E3%82%BB%E3%83%83%E3%83%88-%E5%85%AD%E8%A7%92%E3%82%B9%E3%83%9A%E3%83%BC%E3%82%B5%E3%83%BC-%E3%82%B9%E3%82%BF%E3%83%B3%E3%83%89%E3%82%AA%E3%83%95-%E5%8F%8E%E7%B4%8D%E3%82%B1%E3%83%BC%E3%82%B9%E4%BB%98%E3%81%8D/dp/B09G9RPC18/ref=sr_1_34_sspa?dib=eyJ2IjoiMSJ9.v2Z5JMko630Hc7v-Db1vOLYgTcYCkoMUhfz5IF_I-4JzqykRRxcumS9lJH4CKRcZ15qY-ViSoY3mtOiVZ0QP2wZkjw5S2E_UsbHvFKbaAgUxhOZUDZnY04JrS-doS5FGCc5ihOEbmM6H6voaFzNCjI46_wAnwlSwjeBHu8YuoFJTpUrYDTPbYk2T87zNKMDjfvW7avb-M0O-T4HuXnUi2xE98TZeNuB1jUJXaeh3tX3x7mQEx-yJYUpk9ZUcs2HSCpgzlfMUIAT36_JyIaXNXcYC9brXbkFmLpu3ATNf_Po.wq0WsIwMoUsaMbQw_f9EKbe3EONGyw4YZiOi3AQ8UR8&dib_tag=se&keywords=6%E8%A7%92%E3%82%B9%E3%83%9A%E3%83%BC%E3%82%B5%E3%83%BC+2mm&qid=1713080306&sr=8-34-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9tdGY&psc=1) |16|1000 |ラズパイマウント用 |
-| 締結部品 | 2mm六角スペーサ |6| ↑|サーボドライバ用 |
-| マウント | ラズパイ/バッテリマウント |1|1000 | 材料費のみ換算 |
-| マウント | カメラマウント |1| 300| 材料費のみ換算 |
-| マウント | 超音波センサマウント |1| 500| 材料費のみ換算 |
-| ケーブル | ジャンパワイヤ　メス-オス |5| 1000| 超音波センサ用 |
-| ケーブル | ジャンパワイヤ　メス-メス |1| 1000| サーボドライバ用 |
-| togikai基盤 | サーボドライバ代替 |任意| --- |  HC-SR04*8個接続用ジャンパピン・ PCA9685 2ch・OLED・ファン電源搭載、秋月BNO055モジュール追加搭載用I2Cスルーホール有 |
+| 分類                   | 名称                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | 個数 | 概算コスト(円) | 説明                                                                                                                |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---- | -------------- | ------------------------------------------------------------------------------------------------------------------- |
+| コンピュータ           | [ラズパイ3B+](https://www.raspberrypi.com/products/raspberry-pi-3-model-b-plus/)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | 1    | ----           | 　販売終了                                                                                                          |
+| コンピュータ           | [ラズパイ3A](https://raspberry-pi.ksyic.com/main/index/pdp.id/512/pdp.open/512)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | -    | 5000           | （代替）                                                                                                            |
+| コンピュータ           | [ラズパイ4B](https://akizukidenshi.com/catalog/g/g114839/)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | -    | 10000          | （代替）                                                                                                            |
+| SDカード               | 配布時期による                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | 1    | ----           | 64GB以上、書き込み速度30MB/s以上推奨                                                                                |
+| 距離センサ             | [超音波距離センサー HC-SR04](https://akizukidenshi.com/catalog/g/g111009/)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | 5    | 1500           | [データシート](https://akizukidenshi.com/goodsaffix/hc-sr04_v20.pdf)                                                |
+| ジャイロ加速度センサ   | [BNO055使用 9軸センサーフュージョンモジュールキット](https://akizukidenshi.com/catalog/g/g116996/)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | 任意 | 2500           | [データシート](https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bno055-ds000.pdf)      |
+| カメラ                 | [ラズベリー•パイ（Raspberry Pi）160°広角500MP](https://jp.sainsmart.com/products/wide-angle-fov160-5-megapixel-camera-module-for-raspberry-pi)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | 任意 | 3000           | 　コース内特徴を捉えるため、広角推奨。                                                                              |
+| シャーシ               | [RCスターユニット 1/14 エアロ アバンテ](https://tamiyashop.jp/shop/g/g57402/)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | 1    | 6500           | 　販売終了                                                                                                          |
+| モーター               | シャーシに含む                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | 1    | ----           |
+| コンピュータ用バッテリ | [Anker PowerCore Fusion 5000](https://amzn.asia/d/b78Zim4)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | 1    | 3600           |                                                                                                                     |
+| 駆動用バッテリ         | 単３電池                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | 4    | 400            |                                                                                                                     |
+| モータドライバ         | [RC ESC 20A ブラシモーター](https://www.amazon.co.jp/GoolRC-%E3%83%96%E3%83%A9%E3%82%B7%E3%83%A2%E3%83%BC%E3%82%BF%E3%83%BC-%E3%82%B9%E3%83%94%E3%83%BC%E3%83%89%E3%82%B3%E3%83%B3%E3%83%88%E3%83%AD%E3%83%BC%E3%83%A9%E3%83%BC-%E5%88%87%E3%82%8A%E6%9B%BF%E3%81%88%E5%8F%AF%E8%83%BD-%E3%83%96%E3%83%AC%E3%83%BC%E3%82%AD%E4%BB%98/dp/B014RB6WS6)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | 1    | 1500           |                                                                                                                     |
+| サーボドライバ         | [PCA9685 16チャンネル 12-ビット PWM Servo モーター ドライバー](https://amzn.asia/d/0sswysQ)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | 1    | 1000           |                                                                                                                     |
+| コントローラー         | [Logicool G ゲームパッド コントローラー F710](https://www.amazon.co.jp/%E3%83%AD%E3%82%B8%E3%82%AF%E3%83%BC%E3%83%AB-F710r-%E3%80%90%E3%83%A2%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%BC%E3%83%8F%E3%83%B3%E3%82%BF%E3%83%BC%E3%83%95%E3%83%AD%E3%83%B3%E3%83%86%E3%82%A3%E3%82%A2%E6%AD%A3%E5%BC%8F%E6%8E%A8%E5%A5%A8%E3%80%91-LOGICOOL-%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%AC%E3%82%B9%E3%82%B2%E3%83%BC%E3%83%A0%E3%83%91%E3%83%83%E3%83%89/dp/B00CDG7994)                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | 1    | 4000           |                                                                                                                     |
+| 締結部品               | [2mm六角スペーサ](https://www.amazon.co.jp/%E3%83%8A%E3%82%A4%E3%83%AD%E3%83%B3%E3%83%8D%E3%82%B8%E3%83%8A%E3%83%83%E3%83%88-320%E5%80%8B%E3%82%BB%E3%83%83%E3%83%88-%E5%85%AD%E8%A7%92%E3%82%B9%E3%83%9A%E3%83%BC%E3%82%B5%E3%83%BC-%E3%82%B9%E3%82%BF%E3%83%B3%E3%83%89%E3%82%AA%E3%83%95-%E5%8F%8E%E7%B4%8D%E3%82%B1%E3%83%BC%E3%82%B9%E4%BB%98%E3%81%8D/dp/B09G9RPC18/ref=sr_1_34_sspa?dib=eyJ2IjoiMSJ9.v2Z5JMko630Hc7v-Db1vOLYgTcYCkoMUhfz5IF_I-4JzqykRRxcumS9lJH4CKRcZ15qY-ViSoY3mtOiVZ0QP2wZkjw5S2E_UsbHvFKbaAgUxhOZUDZnY04JrS-doS5FGCc5ihOEbmM6H6voaFzNCjI46_wAnwlSwjeBHu8YuoFJTpUrYDTPbYk2T87zNKMDjfvW7avb-M0O-T4HuXnUi2xE98TZeNuB1jUJXaeh3tX3x7mQEx-yJYUpk9ZUcs2HSCpgzlfMUIAT36_JyIaXNXcYC9brXbkFmLpu3ATNf_Po.wq0WsIwMoUsaMbQw_f9EKbe3EONGyw4YZiOi3AQ8UR8&dib_tag=se&keywords=6%E8%A7%92%E3%82%B9%E3%83%9A%E3%83%BC%E3%82%B5%E3%83%BC+2mm&qid=1713080306&sr=8-34-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9tdGY&psc=1) | 16   | 1000           | ラズパイマウント用                                                                                                  |
+| 締結部品               | 2mm六角スペーサ                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | 6    | ↑              | サーボドライバ用                                                                                                    |
+| マウント               | ラズパイ/バッテリマウント                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | 1    | 1000           | 材料費のみ換算                                                                                                      |
+| マウント               | カメラマウント                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | 1    | 300            | 材料費のみ換算                                                                                                      |
+| マウント               | 超音波センサマウント                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | 1    | 500            | 材料費のみ換算                                                                                                      |
+| ケーブル               | ジャンパワイヤ　メス-オス                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | 5    | 1000           | 超音波センサ用                                                                                                      |
+| ケーブル               | ジャンパワイヤ　メス-メス                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | 1    | 1000           | サーボドライバ用                                                                                                    |
+| togikai基盤            | サーボドライバ代替                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | 任意 | ---            | HC-SR04\*8個接続用ジャンパピン・ PCA9685 2ch・OLED・ファン電源搭載、秋月BNO055モジュール追加搭載用I2Cスルーホール有 |
 
 #### 組み立てマニュアル
 
@@ -290,13 +290,13 @@ T.B.D.
 
 ##### 選択肢１：既存のイメージをベースに環境構築
 
-下記を実施したイメージは[こちら]()
+下記を実施したイメージはこちら
 
 <!-- TODO: GDriveで配信 -->
 
 1. [リンク](https://drive.google.com/file/d/1uiUkqMNAAhONLD7ZHmhPery9QN9qlK32/view?usp=sharing)先をダウンロードしイメージをSDカードに焼く。
-詳細は[参照](https://faboplatform.github.io/DonkeyDocs/7.SD%E3%82%AB%E3%83%BC%E3%83%89%E4%BD%9C%E6%88%90/01.os_install/)
-2. [ライブラリ類](######ライブラリ類)をインストール
+   詳細は[参照](https://faboplatform.github.io/DonkeyDocs/7.SD%E3%82%AB%E3%83%BC%E3%83%89%E4%BD%9C%E6%88%90/01.os_install/)
+2. [ライブラリ類](#ライブラリ類)をインストール
 
 3. hostnameの変更
 
@@ -343,13 +343,14 @@ VScodeはラズパイから直接使うには重かった...
 ##### 選択肢２：まっさらなOSからインストール
 
 1. 利用するOSは[2021-01-11-raspios-buster-i386.iso](https://downloads.raspberrypi.com/rpd_x86/images/rpd_x86-2021-01-12/2021-01-11-raspios-buster-i386.iso)
-donkeycar 4.4.0を利用しやくするため、busterを採用。
+   donkeycar 4.4.0を利用しやくするため、busterを採用。
 
 2. [Win32diskimager](https://sourceforge.net/projects/win32diskimager/)を使って書き込み。
 
    または、Raspberry [Pi Imager](https://www.raspberrypi.com/software/)を使ってSDカードへ書き込み
 
-3. [togikaidrive](https://github.com/autonomous-minicar-battle/togikaidrive.git)をgit cloneする
+3. [togikaidrive](https://github.com/autonomous-minicar-battle/togikaidrive.git)を
+   git cloneする
 
    ```bash
    git clone https://github.com/autonomous-minicar-battle/togikaidrive.git
@@ -358,8 +359,9 @@ donkeycar 4.4.0を利用しやくするため、busterを採用。
 4. パスワードなしSSHログイン：[参考](https://qiita.com/Ash_root/items/143f7f21373f43127da6)
 
 5. wifiの設定ファイル設置と暗号化：[参考](https://raspida.com/wifisetupfile/)
+
    1. 過去wifi設定ミスっているやつでつながらない場合：
-     [参考](https://tm-progapp.hatenablog.com/entry/2022/03/30/112529)
+      [参考](https://tm-progapp.hatenablog.com/entry/2022/03/30/112529)
 
 6. メモリが少ないのでswapを増やす：
    [参考](https://nekopom.jp/raspberrypi_setting09/#index_id0)
@@ -375,25 +377,29 @@ donkeycar 4.4.0を利用しやくするため、busterを採用。
    ```
 
 8. [VNC](https://www.realvnc.com/)　リモートPCからマシン（ラズパイ）を操作するために活用：[参考](https://www.indoorcorgielec.com/resources/raspberry-pi/raspberry-pi-vnc/)
+
    1. VNCビューアーをPCにインストール
    2. ラズパイでVNCサーバーを設定
+
       1. スタートメニューから、「設定 -> Raspberry Piの設定」をクリックします。
       2. 設定ツールが起動するので、上部タブから「インターフェイス」を選択し、VNCの項目を有効にして、「OK」をクリックします。
       3. ラズパイのIP address、またはホスト名を入れて接続
 
    3. その他
+
    - [最新のRaspiOSでRealVNCが使えない問題の解決方法](https://qiita.com/konchi_konnection/items/c8e2258f0a7efb49302f)
 
    - イメージの書き出し手順
-   [参考](https://zenn.dev/takeyan/books/e2c68f8be4ba54/viewer/4d3b53)
+     [参考](https://zenn.dev/takeyan/books/e2c68f8be4ba54/viewer/4d3b53)
 
-   1. [Win32 Disk Imager](https://forest.watch.impress.co.jp/docs/review/1067836.html) でラズパイのSDカードからイメージを作成
-    GoogleDriveとの兼ね合いのため、[改良版](https://github.com/dnobori/DN-Win32DiskImagerRenewal)を使うことをオススメします。
+   1. [Win32 Disk Imager](https://forest.watch.impress.co.jp/docs/review/1067836.html)
+      でラズパイのSDカードからイメージを作成
+      GoogleDriveとの兼ね合いのため、[改良版](https://github.com/dnobori/DN-Win32DiskImagerRenewal)を使うことをオススメします。
 
    2. [Pishrink](https://github.com/Drewsif/PiShrink?fbclid=IwZXh0bgNhZW0CMTAAAR22pQNfbRI-CtGIEqEvlA_xV1-r6faoMIvvau9yBdL2gAle7n3uh6A0DTM_aem_KjcRhs5-_aCddZyr-lsXrw)を使ってイメージファイルを圧縮。
-書きだしたイメージはSDカードのサイズと同じで大きな容量になってしまうのと、
-   　　新しく書き込むSDカードが元のイメージより小さい（同じでもたまに失敗）場合書き込めないため、拡張がされるように圧縮します。
-   ＊Linuxが必要なため、WindowsPCの人はWSLを利用。
+      書きだしたイメージはSDカードのサイズと同じで大きな容量になってしまうのと、
+      　　新しく書き込むSDカードが元のイメージより小さい（同じでもたまに失敗）場合書き込めないため、拡張がされるように圧縮します。
+      ＊Linuxが必要なため、WindowsPCの人はWSLを利用。
 
    3. 圧縮されたイメージファイルをbalenaEtcherやRaspberry Pi Imagerで新しいSDカードに焼く。
 
@@ -427,7 +433,8 @@ donkeycar 4.4.0を利用しやくするため、busterを採用。
    pip install torchvision-0.8.0a0+45f960c-cp37-cp37m-linux_armv7l.whl
    ```
 
-   git clone出来ないことがあるがその場合は直接[ダウンロード](https://github.com/Kashu7100/pytorch-armv7l/archive/refs/heads/main.zip)してから、pip installを実施する。
+   git clone出来ないことがあるがその場合は直接[ダウンロード](https://github.com/Kashu7100/pytorch-armv7l/archive/refs/heads/main.zip)してから、
+   pip installを実施する。
 
    エラーがないことを確認
 
@@ -466,7 +473,7 @@ donkeycar 4.4.0を利用しやくするため、busterを採用。
 7. ジャイロに挑戦する方はインストール　たくさん種類があります。
 
    - [BNO055使用 9軸センサーフュージョンモジュールキット](https://akizukidenshi.com/catalog/g/g116996/)、togikai基盤にそのまま乗ります。
-   [参考](https://github.com/ghirlekar/bno055-python-i2c)
+     [参考](https://github.com/ghirlekar/bno055-python-i2c)
 
    ```bash
    sudo nano /etc/modules
@@ -498,12 +505,14 @@ donkeycar 4.4.0を利用しやくするため、busterを採用。
    ```
 
 8. oledディスプレイの設定
+
    - rc.localがある場合
      - [FaBoPlatform/ip_address_display](https://github.com/FaBoPlatform/ip_address_display)
    - rc.localがない場合
      - [Raspberry Piでプログラムを自動起動する5種類の方法を比較・解説](https://qiita.com/karaage0703/items/ed18f318a1775b28eab4#systemd-%E3%82%92%E4%BD%BF%E3%81%86%E6%96%B9%E6%B3%95)
 
 9. donkeycar(ver. 4.4.0)をインストール
+
    - [公式ドキュメント](https://docs.donkeycar.com/guide/robot_sbc/setup_raspberry_pi/)
 
    1. 依存環境セットアップ
@@ -554,6 +563,7 @@ donkeycar 4.4.0を利用しやくするため、busterを採用。
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
+<!-- markdownlint-disable MD053 -->
 [contributors-shield]: https://img.shields.io/github/contributors/nino-kin/racecar.svg?style=for-the-badge
 [contributors-url]: https://github.com/nino-kin/racecar/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/nino-kin/racecar.svg?style=for-the-badge
@@ -566,3 +576,4 @@ donkeycar 4.4.0を利用しやくするため、busterを採用。
 [watchers-url]: https://github.com/nino-kin/racecar/watchers
 [license-shield]: https://img.shields.io/github/license/nino-kin/racecar.svg?style=for-the-badge
 [license-url]: https://github.com/nino-kin/racecar/blob/main/LICENSE
+<!-- markdownlint-enable MD053 -->
