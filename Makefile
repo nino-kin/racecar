@@ -26,6 +26,7 @@ help: ## Show this help message
 clean: ## Cleanup
 	@rm -rf .pre-commit
 	@rm -rf .venv
+	@rm -rf .ruff_cache .mypy_cache
 
 install: ## Install dependencies
 	@poetry install
