@@ -29,3 +29,26 @@ convention = "google"
 # 個別設定
 # __init__.pyは未使用インポートを許容
 "__init__.py" = ["F401"]
+
+[tool.poetry]
+name = "racecar"
+version = "0.1.0"
+description = "program for self driving racecar"
+authors = ["ninokin25 <masa25hw@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+Flask = "^3.0.3"
+matplotlib = "^3.9.2"
+Adafruit-PCA9685 = "^1.0.1"
+pygame = "^2.6.0"
+pre-commit = "^3.8.0"
+ruff = "^0.6.2"
+mypy = "^1.11.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
