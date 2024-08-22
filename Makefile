@@ -1,4 +1,4 @@
-.PHONY: help pre-commit
+.PHONY: help clean install pre-commit venv
 
 SHELL := /bin/bash
 
@@ -7,7 +7,12 @@ PWD := $(shell pwd)
 ROOT_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 SCRIPT_DIR := scripts
 
+# For pre-commit
 export PRE_COMMIT_HOME=.pre-commit
+
+# For poetry
+export POETRY_VIRTUALENVS_IN_PROJECT=true
+export POETRY_VIRTUALENVS_CREATE=false
 
 # For more information on this technique, see
 # https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
@@ -18,5 +23,16 @@ help: ## Show this help message
 	| sort \
 	| awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'
 
+clean: ## Cleanup
+	@rm -rf .pre-commit
+	@rm -rf .venv
+	@rm -rf .ruff_cache .mypy_cache
+
+install: ## Install dependencies
+	@poetry install
+
 pre-commit: ## Run pre-commit hooks
-	@pre-commit run --all-files
+	@poetry run pre-commit run --all-files
+
+venv: ## Activate the virtual environment
+	@poetry shell
